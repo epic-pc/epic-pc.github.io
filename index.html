@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpicPC - Shop Free Fire PC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e17 0%, #13182b 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* LOADING SCREEN */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: #0a0e17;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+        .loader {
+            width: 60px; height: 60px;
+            border: 3px solid rgba(30, 144, 255, 0.3);
+            border-top: 3px solid #1e90ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .enter-btn {
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+        .enter-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.5);
+        }
+        
+        /* HEADER */
+        header {
+            background: rgba(19, 24, 43, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-img {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            border: 2px solid #1e90ff;
+            object-fit: cover;
+        }
+        .logo-text h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-text p {
+            font-size: 14px;
+            color: #b0c4de;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-link {
+            color: #b0c4de;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        .nav-link:hover {
+            color: #1e90ff;
+            background: rgba(30, 144, 255, 0.1);
+        }
+        .discord-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #5865F2, #7289DA);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        .discord-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* MAIN CONTENT */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* SECTIONS */
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i {
+            color: #1e90ff;
+        }
+        
+        /* SHOP SECTION */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .product-card {
+            background: linear-gradient(135deg, rgba(30, 35, 56, 0.8), rgba(30, 35, 56, 0.4));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, #1e90ff, #9d4edd);
+        }
+        .product-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .product-features {
+            margin: 20px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .feature-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .feature-item::before {
+            content: '✓';
+            color: #06ffa5;
+            font-weight: bold;
+        }
+        .price-tag {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(6, 255, 165, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(6, 255, 165, 0.2);
+        }
+        .buy-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 144, 255, 0.3);
+        }
+        .best-seller {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .hot-tag {
+            position: absolute;
+            top: 20px;
+            left: -30px;
+            background: linear-gradient(135deg, #ff9500, #ff5e00);
+            color: white;
+            padding: 5px 40px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .new-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+        }
+        
+        /* VERSION TABS */
+        .version-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .version-tab {
+            flex: 1;
+            padding: 12px 5px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #b0c4de;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .version-tab:hover {
+            background: rgba(30, 144, 255, 0.1);
+            border-color: #1e90ff;
+        }
+        .version-tab.active {
+            background: rgba(30, 144, 255, 0.2);
+            border-color: #1e90ff;
+            color: white;
+        }
+        .version-tab span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .version-tab small {
+            font-size: 14px;
+            margin-top: 5px;
+            color: #06ffa5;
+        }
+        
+        /* MODALS */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .payment-content {
+            background: #1e2538;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.4s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #b0c4de;
+            transition: color 0.3s;
+        }
+        .close-modal:hover {
+            color: #fff;
+        }
+        
+        /* CUSTOM KEY INPUT */
+        .key-input-section {
+            background: rgba(30, 144, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .key-preview {
+            font-family: monospace;
+            font-size: 20px;
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border: 1px solid #1e90ff;
+        }
+        
+        /* QR CODE */
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e2538;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1001;
+            border-left: 4px solid #06ffa5;
+        }
+        
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #b0c4de;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 50px;
+            background: rgba(19, 24, 43, 0.8);
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .social-link {
+            color: #b0c4de;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        .social-link:hover {
+            color: #1e90ff;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .shop-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .version-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <h3>EpicPC Shop</h3>
+        <p style="margin: 10px 0; color: #b0c4de;">Đang tải cửa hàng...</p>
+        <button class="enter-btn" id="enterBtn">
+            <i class="fas fa-rocket"></i> Vào Trang Chính
+        </button>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Header với AVATAR -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <!-- ========== AVATAR ĐÃ ĐƯỢC THÊM ========== -->
+                <img src="images\avt.png" 
+                     alt="EpicPC Logo" class="logo-img">
+                
+                <div class="logo-text">
+                    <h1>EpicPC</h1>
+                    <p>@epic.exe | Shop Free Fire PC</p>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#shop" class="nav-link"><i class="fas fa-shopping-cart"></i> Cửa Hàng</a>
+                <a href="#support" class="nav-link"><i class="fas fa-headset"></i> Hỗ Trợ</a>
+            </div>
+            <a href="https://discord.gg/uvNr6N2Tm3" target="_blank" class="discord-btn">
+                <i class="fab fa-discord"></i> Discord
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Shop Section -->
+        <section id="shop">
+            <h2 class="section-title"><i class="fas fa-store"></i> Cửa Hàng Sản Phẩm</h2>
+            <div class="shop-grid">
+                <!-- Fixlag PC -->
+                <div class="product-card">
+                    <div class="best-seller">BÁN CHẠY</div>
+                    <h3 class="product-title">Fixlag PC - Tối ưu hệ thống</h3>
+                    <p><i class="fas fa-bolt"></i> Tăng FPS, giảm lag, tối ưu hóa hệ thống</p>
+                    
+                    <div class="product-features">
+                        <div class="feature-item">
+                            <span>Tăng FPS 50-100%</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Giảm lag, giật tối đa</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Tối ưu RAM, CPU</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Dọn dẹp hệ thống tự động</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Hỗ trợ mọi cấu hình máy</span>
+                        </div>
+                    </div>
+                    
+                    <div class="price-tag">
+                        <span style="font-size: 28px; font-weight: bold; color: #06ffa5;">120.000₫</span>
+                        <div style="font-size: 12px; color: #b0c4de;">Key vĩnh viễn</div>
+                    </div>
+                    
+                    <button class="buy-btn" onclick="buyProduct('fixlag-pc')">
+                        <i class="fas fa-shopping-cart"></i> Mua Fixlag PC - 120K
+                    </button>
+                </div>
+
+                <!-- Reg Mouse -->
+                <div class="product-card">
+                    <div class="hot-tag">HOT</div>
+                    <h3 class="product-title">Reg Mouse Sensi</h3>
+                    <p><i class="fas fa-mouse"></i> Cải thiện độ chính xác chuột, kéo tâm</p>
+                    
+                    <div class="version-tabs">
+                        <button class="version-tab active" onclick="selectRegVersion('basic')">
+                            <span>BASIC</span>
+                            <small>100.000₫</small>
+                        </button>
+                        <button class="version-tab" onclick="selectRegVersion('pro')">
+                            <span>PRO</span>
+                            <small>150.000₫</small>
+                        </button>
+                        <button class="version-tab" onclick="selectRegVersion('ultimate')">
+                            <span>ULTIMATE</span>
+                            <small>200.000₫</small>
+                        </button>
+                    </div>
+                    
+                    <div class="product-features" id="regFeatures">
+                        <!-- Features sẽ load bằng JavaScript -->
+                    </div>
+                    
+                    <div class="price-tag">
+                        <span style="font-size: 28px; font-weight: bold; color: #06ffa5;" id="regPriceDisplay">100.000₫</span>
+                        <div style="font-size: 12px; color: #b0c4de;" id="regVersionName">Phiên bản BASIC</div>
+                    </div>
+                    
+                    <button class="buy-btn" onclick="buyProduct('reg-mouse')">
+                        <i class="fas fa-shopping-cart"></i> Mua Reg Mouse
+                    </button>
+                </div>
+
+                <!-- Fake FPS -->
+                <div class="product-card">
+                    <div class="new-badge">MỚI</div>
+                    <h3 class="product-title">Fake FPS Ảo Pro</h3>
+                    <p><i class="fas fa-chart-line"></i> Hiển thị FPS tùy chỉnh, bypass hệ thống</p>
+                    
+                    <div class="product-features">
+                        <div class="feature-item">
+                            <span>Set FPS 90\120\240\320 tùy ý</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Bypass anti-cheat hiệu quả</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Chế độ ẩn, không bị phát hiện</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Không ảnh hưởng hiệu năng thật</span>
+                        </div>
+                    </div>
+                    
+                    <div class="price-tag">
+                        <span style="font-size: 28px; font-weight: bold; color: #ff9500;">100.000₫</span>
+                    </div>
+                    
+                    <button class="buy-btn" onclick="buyProduct('fake-fps')">
+                        <i class="fas fa-shopping-cart"></i> Mua Fake FPS - 100K
+                    </button>
+                </div>
+
+                <!-- Mạng California -->
+                <div class="product-card">
+                    <div class="new-badge">MỚI</div>
+                    <h3 class="product-title">Mạng California Premium</h3>
+                    <p><i class="fas fa-globe-americas"></i> Fake IP Mỹ, trải nghiệm ping California</p>
+                    
+                    <div class="product-features">
+                        <div class="feature-item">
+                            <span>Fake IP California, USA</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Ping 20-40ms ảo</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Vào server Mỹ dễ dàng</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Ẩn IP thật, bảo mật</span>
+                        </div>
+                        <div class="feature-item">
+                            <span>Auto-reconnect ổn định</span>
+                        </div>
+                    </div>
+                    
+                    <div class="price-tag">
+                        <span style="font-size: 28px; font-weight: bold; color: #00d4ff;">80.000₫</span>
+                        <div style="font-size: 12px; color: #00d4ff;">/tháng - Update free</div>
+                    </div>
+                    
+                    <button class="buy-btn" onclick="buyProduct('cali-network')">
+                        <i class="fas fa-shopping-cart"></i> Mua Mạng Cali - 80K
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Section -->
+        <section id="support">
+            <h2 class="section-title"><i class="fas fa-headset"></i> Hỗ Trợ & Liên Hệ</h2>
+            <div class="shop-grid">
+                <div class="product-card">
+                    <h3><i class="fab fa-discord"></i> Discord Support</h3>
+                    <p>Tham gia Discord để được hỗ trợ nhanh nhất, cập nhật tool mới</p>
+                    <button class="buy-btn" onclick="window.open('https://discord.gg/uvNr6N2Tm3', '_blank')">
+                        <i class="fab fa-discord"></i> Tham gia Discord
+                    </button>
+                </div>
+                <div class="product-card">
+                    <h3><i class="fab fa-facebook"></i> Facebook Page</h3>
+                    <p>Theo dõi fanpage để cập nhật tin tức, hướng dẫn sử dụng</p>
+                    <button class="buy-btn" onclick="window.open('https://www.facebook.com/tuannghi.ha.9')">
+                        <i class="fab fa-facebook"></i> Truy cập Fanpage
+                    </button>
+                </div>
+                <div class="product-card">
+                    <h3><i class="fas fa-envelope"></i> Email Support</h3>
+                    <p>Liên hệ qua email cho các vấn đề quan trọng, hợp tác</p>
+                    <button class="buy-btn" onclick="window.location.href='mailto:dichvuffspepic@gmail.com'">
+                        <i class="fas fa-envelope"></i> dichvuffspepic@gmail.com
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-content">
+            <span class="close-modal" onclick="closePaymentModal()">×</span>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-credit-card"></i> Thanh Toán</h2>
+            
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(30, 144, 255, 0.1); border-radius: 10px;">
+                <h3 id="modalProductName" style="color: #1e90ff;"></h3>
+                <p id="modalProductPrice" style="font-size: 24px; font-weight: bold; color: #06ffa5;"></p>
+            </div>
+            
+            <!-- Bước 1: Đặt KEY của bạn -->
+            <div class="key-input-section">
+                <h4 style="color: #06ffa5; margin-bottom: 15px;">
+                    <i class="fas fa-key"></i> Bước 1: Đặt KEY của bạn
+                </h4>
+                <p style="color: #b0c4de; margin-bottom: 15px;">
+                    Nhập KEY mà bạn muốn sử dụng (tối thiểu 6 ký tự):
+                </p>
+                <input type="text" id="customKey" placeholder="VD: VIP123, GAMERPRO, MYKEY2024" 
+                       style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;" 
+                       maxlength="20">
+                
+                <div id="keyPreview" style="display: none; margin-top: 20px;">
+                    <p style="color: #b0c4de;">KEY của bạn sẽ là:</p>
+                    <div class="key-preview" id="previewKeyText"></div>
+                    <p style="color: #ff9500; font-size: 14px;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Chuyển khoản với nội dung này để nhận key
+                    </p>
+                </div>
+                
+                <button onclick="previewKey()" style="width: 100%; padding: 12px; background: rgba(30, 144, 255, 0.2); color: white; border: 1px solid #1e90ff; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                    <i class="fas fa-eye"></i> Xem trước KEY
+                </button>
+            </div>
+            
+            <!-- Bước 2: Thanh toán -->
+            <div style="margin: 30px 0;">
+                <h4 style="color: #1e90ff; margin-bottom: 15px;">
+                    <i class="fas fa-exchange-alt"></i> Bước 2: Thanh toán
+                </h4>
+                
+                <!-- ZaloPay QR -->
+                <div style="text-align: center; margin: 20px 0;">
+                    <h4 style="color: #06a8ff; margin-bottom: 15px;">
+                        <i class="fab fa-cc-zalo"></i> Quét QR ZaloPay
+                    </h4>
+                    <div class="qr-container">
+                        <!-- Thay bằng QR thật của bạn -->
+                        <img src="images\qr.png" 
+                             alt="QR ZaloPay" style="width: 200px; height: 200px;">
+                        <p style="color: #333; margin-top: 10px; font-size: 12px;">Quét bằng ZaloPay để thanh toán</p>
+                    </div>
+                </div>
+                
+                <!-- Hoặc chuyển khoản -->
+                <div style="background: rgba(30, 144, 255, 0.1); padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #1e90ff; margin-bottom: 15px;">
+                        <i class="fas fa-university"></i> Hoặc chuyển khoản ngân hàng
+                    </h4>
+                    
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
+                        <p><strong>Ngân hàng:</strong> TECHCOMBANK</p>
+                        <p><strong>Số TK:</strong> 999999993701</p>
+                        <p><strong>Chủ TK:</strong> TRAN NHU KHANH</p>
+                        <p><strong>Số tiền:</strong> <span id="bankAmount">120.000₫</span></p>
+                        <p><strong>Nội dung:</strong> <span id="bankContent" style="color: #06ffa5; font-weight: bold;">[KEY CỦA BẠN]</span></p>
+                    </div>
+                    
+                    <p style="color: #ff9500; font-size: 14px; margin-top: 15px;">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>QUAN TRỌNG:</strong> Phải chuyển khoản với nội dung là KEY bạn đã đặt ở Bước 1
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Bước 3: Xác nhận -->
+            <div style="margin: 30px 0;">
+                <h4 style="color: #06ffa5; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle"></i> Bước 3: Xác nhận đã thanh toán
+                </h4>
+                
+                <input type="email" id="customerEmail" placeholder="Email nhận key" 
+                       style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
+                <input type="text" id="customerName" placeholder="Họ tên" 
+                       style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
+                <input type="text" id="customerKey" placeholder="KEY bạn đã chuyển khoản" 
+                       style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
+                
+                <div style="background: rgba(255, 149, 0, 0.1); padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ff9500;">
+                    <p style="color: #ff9500; font-size: 14px;">
+                        <i class="fas fa-info-circle"></i> 
+                        Sau khi xác nhận, chúng tôi sẽ kiểm tra và gửi key qua email trong 5-10 phút
+                    </p>
+                </div>
+                
+                <button onclick="submitPayment()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #06ffa5, #00cc88); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                    <i class="fas fa-paper-plane"></i> GỬI YÊU CẦU NHẬN KEY
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="payment-modal" id="successModal">
+        <div class="payment-content">
+            <div style="text-align: center;">
+                <div style="font-size: 60px; color: #06ffa5; margin-bottom: 20px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h2 style="color: #06ffa5; margin-bottom: 10px;">ĐÃ TIẾP NHẬN YÊU CẦU!</h2>
+                <p style="color: #b0c4de; margin-bottom: 30px;">Key sẽ được gửi qua email trong 5-10 phút</p>
+                
+                <div style="background: rgba(6, 255, 165, 0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4>THÔNG TIN ĐƠN HÀNG</h4>
+                    <p style="margin: 10px 0; color: #b0c4de;"><strong>Sản phẩm:</strong> <span id="successProduct"></span></p>
+                    <p style="margin: 10px 0; color: #b0c4de;"><strong>KEY của bạn:</strong> <span id="successKey" style="color: #06ffa5; font-family: monospace;"></span></p>
+                    <p style="margin: 10px 0; color: #b0c4de;"><strong>Email nhận:</strong> <span id="successEmail"></span></p>
+                    <p style="margin: 10px 0; color: #b0c4de;"><strong>Giá:</strong> <span id="successPrice"></span></p>
+                </div>
+                
+                <div style="color: #b0c4de; font-size: 14px; margin: 20px 0;">
+                    <p><i class="fas fa-clock"></i> Kiểm tra email (cả hộp thư spam)</p>
+                    <p><i class="fas fa-phone"></i> Liên hệ hỗ trợ: 0853297104 (Zalo)</p>
+                </div>
+                
+                <button onclick="closeSuccessModal()" style="width: 100%; padding: 15px; background: #444; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                    <i class="fas fa-check"></i> ĐÃ HIỂU
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© EpicPC. Hỗ trợ chuyên sâu về game Free Fire trên PC</p>
+        <p style="margin-top: 10px; font-size: 14px; color: #b0c4de;">
+            <i class="fas fa-shield-alt"></i> An toàn & Bảo mật | 
+            <i class="fas fa-headset"></i> Hỗ trợ 24/7
+        </p>
+        <div class="social-links">
+            <a href="https://facebook.com/your-profile" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://discord.gg/uvNr6N2Tm3" class="social-link" target="_blank"><i class="fab fa-discord"></i></a>
+            <a href="mailto:dichvuffspepic@gmail.com" class="social-link">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // ========== KHỞI TẠO ==========
+        let currentProduct = '';
+        let currentPrice = 0;
+        let currentVersion = 'basic';
+        let pendingOrder = null;
+        
+        // Giá sản phẩm (theo yêu cầu của bạn)
+        const productPrices = {
+            'fixlag-pc': 120000,
+            'fake-fps': 100000,
+            'cali-network': 80000,
+            'reg-mouse': {
+                basic: 100000,
+                pro: 150000,
+                ultimate: 200000
+            }
+        };
+        
+        // Reg Mouse features
+        const regFeatures = {
+            basic: [
+                "Hỗ trợ kéo tâm cơ bản",
+                "Tăng độ bám đầu",
+                "Hỗ trợ qua Discord"
+            ],
+            pro: [
+                "Hỗ trợ kéo tâm nâng cao",
+                "Tăng độ bám đầu MAX",
+                "Giảm recoil 30%",
+                "Hỗ trợ 12/7"
+            ],
+            ultimate: [
+                "Hỗ trợ kéo tâm cao cấp",
+                "Tăng độ bám đầu ULTRA",
+                "Giảm recoil 50%",
+                "Hỗ trợ 24/7 VIP"
+            ]
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto hide loading
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+            }, 2000);
+            
+            initRegMouse();
+        });
+        
+        // ========== REG MOUSE ==========
+        function initRegMouse() {
+            selectRegVersion('basic');
+        }
+        
+        function selectRegVersion(version) {
+            currentVersion = version;
+            
+            // Update tabs
+            document.querySelectorAll('.version-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update price
+            const price = productPrices['reg-mouse'][version];
+            document.getElementById('regPriceDisplay').textContent = formatPrice(price);
+            document.getElementById('regVersionName').textContent = `Phiên bản ${version.toUpperCase()}`;
+            
+            // Update features
+            const featuresContainer = document.getElementById('regFeatures');
+            featuresContainer.innerHTML = '';
+            
+            regFeatures[version].forEach(feature => {
+                const featureItem = document.createElement('div');
+                featureItem.className = 'feature-item';
+                featureItem.innerHTML = `<span>${feature}</span>`;
+                featuresContainer.appendChild(featureItem);
+            });
+        }
+        
+        // ========== MUA HÀNG ==========
+        function buyProduct(productType) {
+            currentProduct = productType;
+            
+            let price = 0;
+            let productName = '';
+            
+            if (productType === 'reg-mouse') {
+                price = productPrices['reg-mouse'][currentVersion];
+                productName = `Reg Mouse ${currentVersion.toUpperCase()}`;
+            } else if (productType === 'fixlag-pc') {
+                price = productPrices['fixlag-pc'];
+                productName = 'Fixlag PC - Tối ưu hệ thống';
+            } else if (productType === 'fake-fps') {
+                price = productPrices['fake-fps'];
+                productName = 'Fake FPS Pro';
+            } else if (productType === 'cali-network') {
+                price = productPrices['cali-network'];
+                productName = 'Mạng California Premium';
+            }
+            
+            currentPrice = price;
+            
+            // Hiển thị modal
+            document.getElementById('modalProductName').textContent = productName;
+            document.getElementById('modalProductPrice').textContent = formatPrice(price);
+            document.getElementById('bankAmount').textContent = formatPrice(price);
+            
+            // Reset form
+            document.getElementById('customKey').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerKey').value = '';
+            document.getElementById('keyPreview').style.display = 'none';
+            
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+        
+        // ========== XEM TRƯỚC KEY ==========
+        function previewKey() {
+            const customKey = document.getElementById('customKey').value.trim().toUpperCase();
+            
+            if (!customKey) {
+                showNotification('Vui lòng nhập KEY bạn muốn đặt!', 'error');
+                return;
+            }
+            
+            if (customKey.length < 6) {
+                showNotification('KEY phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+            
+            // Hiển thị preview
+            document.getElementById('previewKeyText').textContent = customKey;
+            document.getElementById('keyPreview').style.display = 'block';
+            document.getElementById('bankContent').textContent = customKey;
+            
+            showNotification(`KEY của bạn: ${customKey} - Hãy chuyển khoản với nội dung này`, 'success');
+        }
+        
+        // ========== GỬI YÊU CẦU NHẬN KEY ==========
+        function submitPayment() {
+            const customKey = document.getElementById('customKey').value.trim().toUpperCase();
+            const customerEmail = document.getElementById('customerEmail').value.trim();
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerKey = document.getElementById('customerKey').value.trim().toUpperCase();
+            
+            // Validate
+            if (!customKey || !customerEmail || !customerKey) {
+                showNotification('Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+            
+            if (customKey.length < 6) {
+                showNotification('KEY phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+            
+            if (!validateEmail(customerEmail)) {
+                showNotification('Email không hợp lệ!', 'error');
+                return;
+            }
+            
+            if (customKey !== customerKey) {
+                showNotification('KEY nhập lại không khớp với KEY bạn đã đặt!', 'error');
+                return;
+            }
+            
+            // Lưu thông tin đơn hàng
+            pendingOrder = {
+                product: currentProduct,
+                version: currentVersion,
+                price: currentPrice,
+                customKey: customKey,
+                customerEmail: customerEmail,
+                customerName: customerName,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Hiển thị thông báo thành công
+            document.getElementById('successEmail').textContent = customerEmail;
+            document.getElementById('successProduct').textContent = getProductDisplayName();
+            document.getElementById('successKey').textContent = customKey;
+            document.getElementById('successPrice').textContent = formatPrice(currentPrice);
+            
+            // Đóng modal thanh toán, mở modal thành công
+            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('successModal').style.display = 'flex';
+            
+            // Gửi thông tin đến server
+            sendOrderToServer(pendingOrder);
+            
+            showNotification('Đã gửi yêu cầu! Key sẽ được gửi qua email trong 5-10 phút.', 'success');
+        }
+        
+        function getProductDisplayName() {
+            if (currentProduct === 'reg-mouse') {
+                return `Reg Mouse ${currentVersion.toUpperCase()}`;
+            } else if (currentProduct === 'fixlag-pc') {
+                return 'Fixlag PC - Tối ưu hệ thống';
+            } else if (currentProduct === 'fake-fps') {
+                return 'Fake FPS Pro';
+            } else if (currentProduct === 'cali-network') {
+                return 'Mạng California Premium';
+            }
+            return currentProduct;
+        }
+        
+        // ========== GỬI ĐƠN HÀNG ĐẾN SERVER ==========
+        function sendOrderToServer(order) {
+            // Trong thực tế, gọi API đến backend
+            console.log('🎮 EPICPC - ĐƠN HÀNG MỚI:', {
+                '📦 Sản phẩm': getProductDisplayName(),
+                '💰 Giá': formatPrice(order.price),
+                '🔑 KEY khách': order.customKey,
+                '📧 Email': order.customerEmail,
+                '👤 Tên': order.customerName,
+                '⏰ Thời gian': new Date().toLocaleString('vi-VN')
+            });
+            
+            // Lưu vào localStorage
+            const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('epicpc_orders', JSON.stringify(orders));
+            
+            // Tạo email thông báo
+            const emailContent = `
+                🎮 EPICPC SHOP - ĐƠN HÀNG MỚI
+                ===============================
+                📦 Sản phẩm: ${getProductDisplayName()}
+                💰 Giá: ${formatPrice(order.price)}
+                🔑 KEY khách đặt: ${order.customKey}
+                📧 Email khách: ${order.customerEmail}
+                👤 Tên khách: ${order.customerName}
+                ⏰ Thời gian: ${new Date().toLocaleString('vi-VN')}
+                ===============================
+                
+                [ADMIN] Vui lòng:
+                1. Kiểm tra ngân hàng với KEY: ${order.customKey}
+                2. Tạo key thật cho phần mềm
+                3. Gửi key qua email cho khách
+            `;
+            
+            console.log('📧 Thông báo cho admin:', emailContent);
+        }
+        
+        // ========== HÀM HỖ TRỢ ==========
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + '₫';
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.borderLeftColor = type === 'error' ? '#ff6b6b' : '#06ffa5';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+        
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+        
+        // ========== ADMIN FUNCTIONS ==========
+        window.viewOrders = function() {
+            const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            console.log('📋 Danh sách đơn hàng:', orders);
+            alert(`📊 Có ${orders.length} đơn hàng chờ xử lý\nXem console để biết chi tiết`);
+            return orders;
+        };
+        
+        // ========== EVENT HANDLERS ==========
+        document.getElementById('enterBtn').onclick = function() {
+            document.getElementById('loadingScreen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+            }, 500);
+        };
+        
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('paymentModal')) {
+                closePaymentModal();
+            }
+            if (event.target === document.getElementById('successModal')) {
+                closeSuccessModal();
+            }
+        };
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closePaymentModal();
+                closeSuccessModal();
+            }
+        });
+    </script>
+</body>
+</html>
