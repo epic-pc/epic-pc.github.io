@@ -455,7 +455,6 @@
     <header>
         <div class="header-content">
             <div class="logo">
-                <!-- ========== AVATAR ĐÃ ĐƯỢC THÊM ========== -->
                 <img src="images\avt.png" 
                      alt="EpicPC Logo" class="logo-img">
                 
@@ -693,7 +692,6 @@
                         <i class="fab fa-cc-zalo"></i> Quét QR ZaloPay
                     </h4>
                     <div class="qr-container">
-                        <!-- Thay bằng QR thật của bạn -->
                         <img src="images\qr.png" 
                              alt="QR ZaloPay" style="width: 200px; height: 200px;">
                         <p style="color: #333; margin-top: 10px; font-size: 12px;">Quét bằng ZaloPay để thanh toán</p>
@@ -727,9 +725,9 @@
                     <i class="fas fa-check-circle"></i> Bước 3: Xác nhận đã thanh toán
                 </h4>
                 
-                <input type="email" id="customerEmail" placeholder="Email nhận key" 
+                <input type="email" id="customerEmail" placeholder="Email nhận key (nếu có)" 
                        style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
-                <input type="text" id="customerName" placeholder="Họ tên" 
+                <input type="text" id="customerName" placeholder="Họ tên hoặc tên Discord/Zalo" 
                        style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
                 <input type="text" id="customerKey" placeholder="KEY bạn đã chuyển khoản" 
                        style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #2a3147; color: white;">
@@ -737,7 +735,7 @@
                 <div style="background: rgba(255, 149, 0, 0.1); padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ff9500;">
                     <p style="color: #ff9500; font-size: 14px;">
                         <i class="fas fa-info-circle"></i> 
-                        Sau khi xác nhận, chúng tôi sẽ kiểm tra và gửi key qua email trong 5-10 phút
+                        Sau khi xác nhận, chúng tôi sẽ kiểm tra và gửi key qua Discord/Email trong 5-10 phút
                     </p>
                 </div>
                 
@@ -757,19 +755,20 @@
                 </div>
                 
                 <h2 style="color: #06ffa5; margin-bottom: 10px;">ĐÃ TIẾP NHẬN YÊU CẦU!</h2>
-                <p style="color: #b0c4de; margin-bottom: 30px;">Key sẽ được gửi qua email trong 5-10 phút</p>
+                <p style="color: #b0c4de; margin-bottom: 30px;">Key sẽ được gửi trong 5-10 phút</p>
                 
                 <div style="background: rgba(6, 255, 165, 0.1); padding: 20px; border-radius: 10px; margin: 20px 0;">
                     <h4>THÔNG TIN ĐƠN HÀNG</h4>
                     <p style="margin: 10px 0; color: #b0c4de;"><strong>Sản phẩm:</strong> <span id="successProduct"></span></p>
                     <p style="margin: 10px 0; color: #b0c4de;"><strong>KEY của bạn:</strong> <span id="successKey" style="color: #06ffa5; font-family: monospace;"></span></p>
-                    <p style="margin: 10px 0; color: #b0c4de;"><strong>Email nhận:</strong> <span id="successEmail"></span></p>
+                    <p style="margin: 10px 0; color: #b0c4de;"><strong>Liên hệ:</strong> <span id="successContact"></span></p>
                     <p style="margin: 10px 0; color: #b0c4de;"><strong>Giá:</strong> <span id="successPrice"></span></p>
                 </div>
                 
                 <div style="color: #b0c4de; font-size: 14px; margin: 20px 0;">
-                    <p><i class="fas fa-clock"></i> Kiểm tra email (cả hộp thư spam)</p>
+                    <p><i class="fas fa-clock"></i> Kiểm tra Discord/Email (cả hộp thư spam)</p>
                     <p><i class="fas fa-phone"></i> Liên hệ hỗ trợ: 0853297104 (Zalo)</p>
+                    <p><i class="fab fa-discord"></i> Discord: https://discord.gg/uvNr6N2Tm3</p>
                 </div>
                 
                 <button onclick="closeSuccessModal()" style="width: 100%; padding: 15px; background: #444; color: white; border: none; border-radius: 10px; cursor: pointer;">
@@ -777,6 +776,40 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <!-- Nút Admin Panel -->
+    <button onclick="openAdminPanel()" 
+            style="position: fixed; 
+                   bottom: 20px; 
+                   left: 20px; 
+                   background: #333; 
+                   color: white; 
+                   padding: 10px 15px; 
+                   border-radius: 25px; 
+                   z-index: 9999;
+                   border: 2px solid #1e90ff;
+                   cursor: pointer;
+                   font-weight: bold;">
+        <i class="fas fa-user-shield"></i> Admin
+    </button>
+
+    <!-- Panel Admin -->
+    <div id="adminPanel" style="display: none; 
+                              position: fixed; 
+                              top: 50%; 
+                              left: 50%; 
+                              transform: translate(-50%, -50%); 
+                              background: #1e2538; 
+                              padding: 30px; 
+                              border-radius: 15px; 
+                              z-index: 10000; 
+                              width: 90%; 
+                              max-width: 800px; 
+                              max-height: 80vh; 
+                              overflow-y: auto;
+                              border: 2px solid #1e90ff;
+                              box-shadow: 0 0 30px rgba(30, 144, 255, 0.5);">
     </div>
 
     <!-- Footer -->
@@ -802,7 +835,10 @@
         let currentVersion = 'basic';
         let pendingOrder = null;
         
-        // Giá sản phẩm (theo yêu cầu của bạn)
+        // Thay bằng URL Web App của bạn
+        const WEB_APP_URL = 'https://script.google.com/macros/s/YOUR_WEB_APP_ID/exec';
+        
+        // Giá sản phẩm
         const productPrices = {
             'fixlag-pc': 120000,
             'fake-fps': 100000,
@@ -939,15 +975,15 @@
         }
         
         // ========== GỬI YÊU CẦU NHẬN KEY ==========
-        function submitPayment() {
+        async function submitPayment() {
             const customKey = document.getElementById('customKey').value.trim().toUpperCase();
             const customerEmail = document.getElementById('customerEmail').value.trim();
             const customerName = document.getElementById('customerName').value.trim();
             const customerKey = document.getElementById('customerKey').value.trim().toUpperCase();
             
             // Validate
-            if (!customKey || !customerEmail || !customerKey) {
-                showNotification('Vui lòng điền đầy đủ thông tin!', 'error');
+            if (!customKey || !customerKey) {
+                showNotification('Vui lòng nhập KEY và xác nhận KEY!', 'error');
                 return;
             }
             
@@ -956,17 +992,12 @@
                 return;
             }
             
-            if (!validateEmail(customerEmail)) {
-                showNotification('Email không hợp lệ!', 'error');
-                return;
-            }
-            
             if (customKey !== customerKey) {
                 showNotification('KEY nhập lại không khớp với KEY bạn đã đặt!', 'error');
                 return;
             }
             
-            // Lưu thông tin đơn hàng
+            // Tạo đơn hàng
             pendingOrder = {
                 product: currentProduct,
                 version: currentVersion,
@@ -977,20 +1008,101 @@
                 timestamp: new Date().toISOString()
             };
             
-            // Hiển thị thông báo thành công
-            document.getElementById('successEmail').textContent = customerEmail;
-            document.getElementById('successProduct').textContent = getProductDisplayName();
-            document.getElementById('successKey').textContent = customKey;
-            document.getElementById('successPrice').textContent = formatPrice(currentPrice);
+            // Gửi lên server
+            const success = await sendOrderToServer(pendingOrder);
             
-            // Đóng modal thanh toán, mở modal thành công
-            document.getElementById('paymentModal').style.display = 'none';
-            document.getElementById('successModal').style.display = 'flex';
+            if (success) {
+                // Hiển thị thông báo thành công
+                document.getElementById('successEmail').textContent = customerEmail;
+                document.getElementById('successProduct').textContent = getProductDisplayName();
+                document.getElementById('successKey').textContent = customKey;
+                document.getElementById('successPrice').textContent = formatPrice(currentPrice);
+                document.getElementById('successContact').textContent = customerName || customerEmail || 'Qua Discord';
+                
+                // Đóng modal thanh toán, mở modal thành công
+                document.getElementById('paymentModal').style.display = 'none';
+                document.getElementById('successModal').style.display = 'flex';
+                
+                // Gửi thông báo cho admin
+                sendAdminNotification(pendingOrder);
+            }
+        }
+        
+        // ========== GỬI ĐƠN HÀNG ĐẾN SERVER ==========
+        async function sendOrderToServer(order) {
+            // Lưu vào localStorage (backup)
+            const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('epicpc_orders', JSON.stringify(orders));
             
-            // Gửi thông tin đến server
-            sendOrderToServer(pendingOrder);
+            showNotification('Đang lưu đơn hàng...', 'info');
             
-            showNotification('Đã gửi yêu cầu! Key sẽ được gửi qua email trong 5-10 phút.', 'success');
+            // Gửi đến Google Apps Script
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product: order.product,
+                        version: order.version || '',
+                        price: order.price,
+                        customKey: order.customKey,
+                        customerEmail: order.customerEmail,
+                        customerName: order.customerName || '',
+                        timestamp: order.timestamp
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('✅ Đơn hàng đã lưu lên cloud:', result);
+                    showNotification('Đã lưu đơn hàng thành công!', 'success');
+                    return true;
+                } else {
+                    console.error('❌ Lỗi từ server:', result.error);
+                    showNotification('Lưu đơn hàng thất bại, nhưng đã lưu cục bộ', 'error');
+                    return false;
+                }
+                
+            } catch (error) {
+                console.error('❌ Lỗi kết nối:', error);
+                showNotification('Mất kết nối, đơn hàng đã lưu cục bộ', 'error');
+                return false;
+            }
+        }
+        
+        // ========== GỬI THÔNG BÁO CHO ADMIN ==========
+        function sendAdminNotification(order) {
+            const adminEmail = 'email_cua_ban@gmail.com'; // Thay bằng email của bạn
+            const subject = `🎮 EPICPC - Đơn hàng mới: ${order.customKey}`;
+            const body = `
+ĐƠN HÀNG MỚI - EPICPC SHOP
+===========================
+📦 Sản phẩm: ${getProductDisplayName()}
+💰 Giá: ${formatPrice(order.price)}
+🔑 KEY khách đặt: ${order.customKey}
+📧 Email khách: ${order.customerEmail || 'Không có'}
+👤 Tên/Zalo: ${order.customerName || 'Không có'}
+⏰ Thời gian: ${new Date().toLocaleString('vi-VN')}
+💳 Trạng thái: CHỜ XÁC NHẬN
+
+HƯỚNG DẪN XỬ LÝ:
+1. Kiểm tra lịch sử chuyển khoản với KEY: ${order.customKey}
+2. Nếu đã nhận tiền, tạo key phần mềm
+3. Gửi key qua Discord/Email cho khách
+4. Cập nhật trạng thái trong Google Sheet
+            `;
+            
+            // Tạo link mailto
+            const mailtoLink = `mailto:${adminEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Mở client email sau 1 giây
+            setTimeout(() => {
+                window.open(mailtoLink, '_blank');
+            }, 1000);
         }
         
         function getProductDisplayName() {
@@ -1006,42 +1118,169 @@
             return currentProduct;
         }
         
-        // ========== GỬI ĐƠN HÀNG ĐẾN SERVER ==========
-        function sendOrderToServer(order) {
-            // Trong thực tế, gọi API đến backend
-            console.log('🎮 EPICPC - ĐƠN HÀNG MỚI:', {
-                '📦 Sản phẩm': getProductDisplayName(),
-                '💰 Giá': formatPrice(order.price),
-                '🔑 KEY khách': order.customKey,
-                '📧 Email': order.customerEmail,
-                '👤 Tên': order.customerName,
-                '⏰ Thời gian': new Date().toLocaleString('vi-VN')
-            });
-            
-            // Lưu vào localStorage
+        // ========== QUẢN TRỊ ADMIN ==========
+        function openAdminPanel() {
             const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
-            orders.push(order);
-            localStorage.setItem('epicpc_orders', JSON.stringify(orders));
             
-            // Tạo email thông báo
-            const emailContent = `
-                🎮 EPICPC SHOP - ĐƠN HÀNG MỚI
-                ===============================
-                📦 Sản phẩm: ${getProductDisplayName()}
-                💰 Giá: ${formatPrice(order.price)}
-                🔑 KEY khách đặt: ${order.customKey}
-                📧 Email khách: ${order.customerEmail}
-                👤 Tên khách: ${order.customerName}
-                ⏰ Thời gian: ${new Date().toLocaleString('vi-VN')}
-                ===============================
+            let html = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: #1e90ff;">📊 Quản trị đơn hàng (${orders.length})</h2>
+                    <button onclick="closeAdminPanel()" style="background: #ff6b6b; color: white; border: none; padding: 8px 15px; border-radius: 5px;">Đóng</button>
+                </div>
                 
-                [ADMIN] Vui lòng:
-                1. Kiểm tra ngân hàng với KEY: ${order.customKey}
-                2. Tạo key thật cho phần mềm
-                3. Gửi key qua email cho khách
+                <div style="margin-bottom: 20px;">
+                    <button onclick="exportOrders()" style="background: #06ffa5; color: #000; border: none; padding: 10px 15px; border-radius: 5px; margin-right: 10px;">
+                        <i class="fas fa-download"></i> Xuất Excel
+                    </button>
+                    <button onclick="clearAllOrders()" style="background: #ff9500; color: white; border: none; padding: 10px 15px; border-radius: 5px;">
+                        <i class="fas fa-trash"></i> Xóa tất cả
+                    </button>
+                </div>
+                
+                <div style="overflow-x: auto; max-height: 400px;">
             `;
             
-            console.log('📧 Thông báo cho admin:', emailContent);
+            if (orders.length === 0) {
+                html += `<div style="padding: 40px; text-align: center; color: #b0c4de;">
+                            <i class="fas fa-box-open" style="font-size: 40px; margin-bottom: 15px;"></i>
+                            <p>Không có đơn hàng nào</p>
+                         </div>`;
+            } else {
+                html += `
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: rgba(30, 144, 255, 0.2);">
+                                <th style="padding: 10px; border: 1px solid #444;">STT</th>
+                                <th style="padding: 10px; border: 1px solid #444;">Thời gian</th>
+                                <th style="padding: 10px; border: 1px solid #444;">Sản phẩm</th>
+                                <th style="padding: 10px; border: 1px solid #444;">KEY</th>
+                                <th style="padding: 10px; border: 1px solid #444;">Liên hệ</th>
+                                <th style="padding: 10px; border: 1px solid #444;">Giá</th>
+                                <th style="padding: 10px; border: 1px solid #444;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                orders.reverse().forEach((order, index) => {
+                    html += `
+                        <tr style="border-bottom: 1px solid #333;">
+                            <td style="padding: 10px;">${orders.length - index}</td>
+                            <td style="padding: 10px; font-size: 12px;">${new Date(order.timestamp).toLocaleTimeString('vi-VN')}</td>
+                            <td style="padding: 10px;">${getProductDisplayNameForOrder(order)}</td>
+                            <td style="padding: 10px; font-family: monospace; color: #06ffa5;">${order.customKey}</td>
+                            <td style="padding: 10px;">
+                                ${order.customerEmail ? order.customerEmail + '<br>' : ''}
+                                ${order.customerName ? order.customerName : ''}
+                            </td>
+                            <td style="padding: 10px; color: #06ffa5;">${formatPrice(order.price)}</td>
+                            <td style="padding: 10px;">
+                                <button onclick="contactCustomer('${order.customerEmail}', '${order.customerName}', '${order.customKey}')" 
+                                        style="background: #1e90ff; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin-right: 5px;">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                                <button onclick="deleteOrder(${orders.length - 1 - index})" 
+                                        style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            html += `
+                </div>
+                
+                <div style="margin-top: 20px; color: #b0c4de; font-size: 14px;">
+                    <p><i class="fas fa-info-circle"></i> Tổng doanh thu: ${formatPrice(orders.reduce((sum, order) => sum + order.price, 0))}</p>
+                    <p><i class="fas fa-database"></i> Dữ liệu tự động backup vào localStorage</p>
+                </div>
+            `;
+            
+            document.getElementById('adminPanel').innerHTML = html;
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+        
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+        
+        function getProductDisplayNameForOrder(order) {
+            if (order.product === 'reg-mouse') {
+                return `Reg Mouse ${(order.version || 'basic').toUpperCase()}`;
+            } else if (order.product === 'fixlag-pc') {
+                return 'Fixlag PC';
+            } else if (order.product === 'fake-fps') {
+                return 'Fake FPS';
+            } else if (order.product === 'cali-network') {
+                return 'Mạng Cali';
+            }
+            return order.product;
+        }
+        
+        function contactCustomer(email, name, key) {
+            const contact = email || name || 'Không có thông tin';
+            const mailtoLink = `mailto:${email || 'dichvuffspepic@gmail.com'}?subject=EpicPC - Key ${key}&body=Chào bạn,%0D%0A%0D%0ADưới đây là key phần mềm bạn đã đặt:%0D%0A%0D%0A🔑 KEY: ${key}%0D%0A%0D%0AHướng dẫn sử dụng:%0D%0A1. Tải phần mềm tại: [link download]%0D%0A2. Nhập key này để kích hoạt%0D%0A3. Liên hệ nếu có vấn đề%0D%0A%0D%0A---%0D%0AEpicPC Shop%0D%0AHotline: 0853297104`;
+            
+            if (confirm(`Liên hệ với: ${contact}\nKEY: ${key}\n\nMở email gửi key?`)) {
+                window.open(mailtoLink);
+            }
+        }
+        
+        function deleteOrder(index) {
+            if (confirm('Bạn có chắc muốn xóa đơn hàng này?')) {
+                const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+                orders.splice(index, 1);
+                localStorage.setItem('epicpc_orders', JSON.stringify(orders));
+                openAdminPanel();
+                showNotification('Đã xóa đơn hàng', 'success');
+            }
+        }
+        
+        function clearAllOrders() {
+            if (confirm('Bạn có chắc muốn xóa TẤT CẢ đơn hàng? Hành động này không thể hoàn tác!')) {
+                localStorage.removeItem('epicpc_orders');
+                openAdminPanel();
+                showNotification('Đã xóa tất cả đơn hàng', 'success');
+            }
+        }
+        
+        function exportOrders() {
+            const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            
+            let csv = 'STT,Thời gian,Sản phẩm,Phiên bản,Giá,KEY,Email,Tên khách,Ngày đặt\n';
+            
+            orders.forEach((order, index) => {
+                csv += `${index + 1},`;
+                csv += `"${new Date(order.timestamp).toLocaleString('vi-VN')}",`;
+                csv += `"${getProductDisplayNameForOrder(order)}",`;
+                csv += `"${order.version || ''}",`;
+                csv += `"${formatPrice(order.price)}",`;
+                csv += `"${order.customKey}",`;
+                csv += `"${order.customerEmail || ''}",`;
+                csv += `"${order.customerName || ''}",`;
+                csv += `"${new Date(order.timestamp).toLocaleDateString('vi-VN')}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `epicpc_orders_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification(`Đã xuất ${orders.length} đơn hàng`, 'success');
         }
         
         // ========== HÀM HỖ TRỢ ==========
@@ -1073,14 +1312,6 @@
             document.getElementById('successModal').style.display = 'none';
         }
         
-        // ========== ADMIN FUNCTIONS ==========
-        window.viewOrders = function() {
-            const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
-            console.log('📋 Danh sách đơn hàng:', orders);
-            alert(`📊 Có ${orders.length} đơn hàng chờ xử lý\nXem console để biết chi tiết`);
-            return orders;
-        };
-        
         // ========== EVENT HANDLERS ==========
         document.getElementById('enterBtn').onclick = function() {
             document.getElementById('loadingScreen').style.opacity = '0';
@@ -1096,12 +1327,16 @@
             if (event.target === document.getElementById('successModal')) {
                 closeSuccessModal();
             }
+            if (event.target === document.getElementById('adminPanel')) {
+                closeAdminPanel();
+            }
         };
         
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closePaymentModal();
                 closeSuccessModal();
+                closeAdminPanel();
             }
         });
     </script>
