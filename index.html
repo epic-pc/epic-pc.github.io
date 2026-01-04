@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
     <style>
         /* RESET & BASE */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -479,18 +483,42 @@
             border-radius: 4px;
         }
         
-        /* Password prompt styling */
-        .admin-password-input {
-            background: rgba(30, 35, 56, 0.9);
-            border: 2px solid #1e90ff;
+        /* New Order Alert */
+        .new-order-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
             color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 16px;
-            margin: 10px 0;
-            width: 250px;
-            text-align: center;
-            letter-spacing: 2px;
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 10002;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideInRight 0.5s;
+            border-left: 5px solid #06ffa5;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Order Counter */
+        .order-counter {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-weight: bold;
+            z-index: 10001;
+            box-shadow: 0 0 20px rgba(255,107,107,0.5);
+            animation: pulse 2s infinite;
         }
         
         /* RESPONSIVE */
@@ -513,6 +541,10 @@
                 width: 95%;
                 padding: 20px;
             }
+            .new-order-alert {
+                max-width: 90%;
+                right: 5%;
+            }
         }
     </style>
 </head>
@@ -529,6 +561,40 @@
 
     <!-- Notification -->
     <div class="notification" id="notification"></div>
+
+    <!-- Popup thông báo đơn hàng mới -->
+    <div id="newOrderAlert" class="new-order-alert">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <div style="font-size: 24px;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div>
+                <h4 style="margin: 0; color: white;">🎮 ĐƠN HÀNG MỚI!</h4>
+                <p style="margin: 5px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">Vừa có khách đặt hàng</p>
+            </div>
+            <button onclick="closeNewOrderAlert()" style="margin-left: auto; background: transparent; border: none; color: white; font-size: 20px; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="orderAlertContent" style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+            <!-- Nội dung đơn hàng sẽ hiển thị ở đây -->
+        </div>
+        
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button onclick="viewOrderInAdmin()" style="flex: 1; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 8px; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-eye"></i> Xem ngay
+            </button>
+            <button onclick="markOrderAsRead()" style="flex: 1; background: #06ffa5; color: #000; border: none; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                <i class="fas fa-check"></i> Đã xử lý
+            </button>
+        </div>
+    </div>
+
+    <!-- Counter đơn hàng mới -->
+    <div id="orderCounter" class="order-counter">
+        <span id="newOrderCount">0</span>
+    </div>
 
     <!-- Header với AVATAR -->
     <header>
@@ -881,8 +947,15 @@
         </div>
     </footer>
 
-    <script>
-        // ========== KHỞI TẠO ==========
+    <script type="text/javascript">
+        // ========== KHỞI TẠO EMAILJS ==========
+        // THAY THẾ 3 DÒNG NÀY BẰNG THÔNG TIN CỦA BẠN
+        emailjs.init("m7DWwc9AGW_YgXBzM"); // Public Key từ EmailJS
+        const EMAILJS_SERVICE_ID = "service_epic";
+        const EMAILJS_TEMPLATE_ID = "template_3m4xi6w";
+        const EMAILJS_CUSTOMER_TEMPLATE_ID = "template_7lehv5n";
+
+        // ========== CẤU HÌNH HỆ THỐNG ==========
         let currentProduct = '';
         let currentPrice = 0;
         let currentVersion = 'basic';
@@ -890,7 +963,11 @@
         let ADMIN_PASSWORD = 'EpicPC'; // Mật khẩu admin
         
         // Thay bằng URL Web App của bạn
-        const WEB_APP_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgksIH5iLClSGkdsX26QjbGgt5I42Ix38W_y1Igj9twUPAbUoRmVgBrFXpZ290XmniNO4TmebJT0i59d1YAeKuiXMIW2cRvJaZzMroaIvHt8U4u5AwRCvTas0XzSgK_Zg0oZxdHqewsVc3xb0yuPMVc9Ch9QuCiVZ4c4xir9s4JP4Bkj4Gly1xxeBYm_kB7J8zmsJ9fy4ymYQ9Qmg7OACLMIZdqbEmAAFjA3mXHOPCGnp8a-PR9HWCxacP4QHDQwn5LVsP28YoABfAwe-HDwsMCo2oFF7STTr6eFrS4&lib=MJImc5xVL05ODoHbZmKh7u-llACzxaqyj';
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzKRM8e751N9G2zkq6wvqaq8dI83TbsfknZAQBUd075BABpxpgGk88h3ojfBGvAjO10Xw/exec';
+        
+        // ========== BIẾN HỆ THỐNG THÔNG BÁO ==========
+        let newOrders = JSON.parse(localStorage.getItem('new_orders') || '[]');
+        let currentAlertOrder = null;
         
         // Giá sản phẩm
         const productPrices = {
@@ -925,6 +1002,7 @@
             ]
         };
         
+        // ========== KHỞI ĐỘNG ==========
         document.addEventListener('DOMContentLoaded', function() {
             // Auto hide loading
             setTimeout(() => {
@@ -935,6 +1013,8 @@
             }, 2000);
             
             initRegMouse();
+            initNotificationSystem();
+            setTimeout(checkForNewOrders, 2000);
         });
         
         // ========== REG MOUSE ==========
@@ -1076,9 +1156,6 @@
                 // Đóng modal thanh toán, mở modal thành công
                 document.getElementById('paymentModal').style.display = 'none';
                 document.getElementById('successModal').style.display = 'flex';
-                
-                // Gửi thông báo cho admin
-                sendAdminNotification(pendingOrder);
             }
         }
         
@@ -1089,9 +1166,30 @@
             orders.push(order);
             localStorage.setItem('epicpc_orders', JSON.stringify(orders));
             
-            showNotification('Đang lưu đơn hàng...', 'info');
+            // ===== 1. THÔNG BÁO TRÊN WEBSITE =====
+            notifyNewOrder(order);
             
-            // Gửi đến Google Apps Script
+            // ===== 2. GỬI EMAIL CHO ADMIN =====
+            sendOrderEmailNotification(order).then(result => {
+                if (result.success) {
+                    console.log('✅ Đã gửi email thông báo cho admin');
+                } else if (result.fallback) {
+                    console.log('⚠️ Đã dùng phương thức dự phòng');
+                }
+            });
+            
+            // ===== 3. GỬI EMAIL XÁC NHẬN CHO KHÁCH (nếu có email) =====
+            if (order.customerEmail && validateEmail(order.customerEmail)) {
+                sendCustomerConfirmationEmail(order).then(result => {
+                    if (result.success) {
+                        showNotification('Đã gửi email xác nhận cho khách', 'success');
+                    }
+                });
+            }
+            
+            showNotification('Đang xử lý đơn hàng...', 'info');
+            
+            // ===== 4. GỬI LÊN GOOGLE SHEET =====
             try {
                 const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
@@ -1113,11 +1211,11 @@
                 
                 if (result.success) {
                     console.log('✅ Đơn hàng đã lưu lên cloud:', result);
-                    showNotification('Đã lưu đơn hàng thành công!', 'success');
+                    showNotification('Đơn hàng đã được xử lý!', 'success');
                     return true;
                 } else {
                     console.error('❌ Lỗi từ server:', result.error);
-                    showNotification('Lưu đơn hàng thất bại, nhưng đã lưu cục bộ', 'error');
+                    showNotification('Lỗi kết nối server, đã lưu cục bộ', 'error');
                     return false;
                 }
                 
@@ -1128,35 +1226,143 @@
             }
         }
         
-        // ========== GỬI THÔNG BÁO CHO ADMIN ==========
-        function sendAdminNotification(order) {
-            const adminEmail = 'kslowshios@gmail.com'; // Thay bằng email của bạn
-            const subject = `🎮 EPICPC - Đơn hàng mới: ${order.customKey}`;
-            const body = `
-ĐƠN HÀNG MỚI - EPICPC SHOP
-===========================
-📦 Sản phẩm: ${getProductDisplayName()}
-💰 Giá: ${formatPrice(order.price)}
-🔑 KEY khách đặt: ${order.customKey}
-📧 Email khách: ${order.customerEmail || 'Không có'}
-👤 Tên/Zalo: ${order.customerName || 'Không có'}
-⏰ Thời gian: ${new Date().toLocaleString('vi-VN')}
-💳 Trạng thái: CHỜ XÁC NHẬN
+        // ========== GỬI EMAIL THÔNG BÁO ĐƠN HÀNG ==========
+        async function sendOrderEmailNotification(order) {
+            try {
+                // Lấy cấu hình email từ localStorage hoặc dùng mặc định
+                const emailSettings = JSON.parse(localStorage.getItem('email_settings') || '{}');
+                const adminEmail = emailSettings.adminEmail || 'dichvuffspepic@gmail.com';
+                
+                // Template data
+                const templateParams = {
+                    to_email: adminEmail,
+                    to_name: 'Admin EpicPC',
+                    from_name: 'EpicPC Shop System',
+                    order_id: order.customKey,
+                    product_name: getProductDisplayNameForOrder(order),
+                    product_version: order.version || 'Standard',
+                    price: formatPrice(order.price),
+                    customer_email: order.customerEmail || 'Không có',
+                    customer_name: order.customerName || 'Không có',
+                    order_time: new Date(order.timestamp).toLocaleString('vi-VN'),
+                    payment_method: 'Chuyển khoản',
+                    bank_name: 'TECHCOMBANK',
+                    bank_account: '999999993701',
+                    bank_holder: 'TRAN NHU KHANH',
+                    note: `Chuyển khoản với nội dung: ${order.customKey}`,
+                    current_date: new Date().toLocaleDateString('vi-VN'),
+                    current_time: new Date().toLocaleTimeString('vi-VN'),
+                    total_orders: (JSON.parse(localStorage.getItem('epicpc_orders') || '[]')).length + 1
+                };
 
-HƯỚNG DẪN XỬ LÝ:
+                console.log('📧 Đang gửi email thông báo...');
+                
+                // Gửi email qua EmailJS
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+                
+                console.log('✅ Email đã gửi thành công:', response);
+                return { success: true, message: 'Đã gửi email thông báo' };
+                
+            } catch (error) {
+                console.error('❌ Lỗi gửi email:', error);
+                
+                // Fallback: Gửi qua mailto link
+                sendEmailFallback(order);
+                
+                return { 
+                    success: false, 
+                    error: error.text || 'Không thể gửi email',
+                    fallback: true 
+                };
+            }
+        }
+        
+        // Phương thức dự phòng nếu EmailJS lỗi
+        function sendEmailFallback(order) {
+            const subject = `🎮 EPICPC - ĐƠN HÀNG MỚI: ${order.customKey}`;
+            const body = `
+===========================================
+🎮 EPICPC SHOP - ĐƠN HÀNG MỚI
+===========================================
+
+📦 THÔNG TIN ĐƠN HÀNG:
+• Sản phẩm: ${getProductDisplayNameForOrder(order)}
+• Phiên bản: ${order.version || 'Standard'}
+• KEY đặt: ${order.customKey}
+• Giá: ${formatPrice(order.price)}
+
+👤 THÔNG TIN KHÁCH HÀNG:
+• Email: ${order.customerEmail || 'Không có'}
+• Tên: ${order.customerName || 'Không có'}
+• Thời gian: ${new Date(order.timestamp).toLocaleString('vi-VN')}
+
+💳 THÔNG TIN THANH TOÁN:
+• Ngân hàng: TECHCOMBANK
+• Số TK: 999999993701
+• Chủ TK: TRAN NHU KHANH
+• Nội dung CK: ${order.customKey}
+
+📋 HƯỚNG DẪN XỬ LÝ:
 1. Kiểm tra lịch sử chuyển khoản với KEY: ${order.customKey}
 2. Nếu đã nhận tiền, tạo key phần mềm
-3. Gửi key qua Discord/Email cho khách
+3. Gửi key qua email/Discord cho khách
 4. Cập nhật trạng thái trong Google Sheet
-            `;
-            
-            // Tạo link mailto
+
+===========================================
+⏰ Thời gian: ${new Date().toLocaleString('vi-VN')}
+📊 Tổng đơn: ${(JSON.parse(localStorage.getItem('epicpc_orders') || '[]')).length + 1}
+===========================================
+    `;
+    
+            // Gửi cho admin
+            const adminEmail = JSON.parse(localStorage.getItem('email_settings') || '{}').adminEmail || 'dichvuffspepic@gmail.com';
             const mailtoLink = `mailto:${adminEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             
-            // Mở client email sau 1 giây
+            // Mở client email
             setTimeout(() => {
                 window.open(mailtoLink, '_blank');
-            }, 1000);
+            }, 2000);
+            
+            console.log('📧 Đã mở client email dự phòng');
+        }
+        
+        // ========== GỬI EMAIL XÁC NHẬN CHO KHÁCH ==========
+        async function sendCustomerConfirmationEmail(order) {
+            if (!order.customerEmail) return { success: false, message: 'Khách không có email' };
+            
+            try {
+                const templateParams = {
+                    to_email: order.customerEmail,
+                    to_name: order.customerName || 'Khách hàng',
+                    from_name: 'EpicPC Shop',
+                    order_id: order.customKey,
+                    product_name: getProductDisplayNameForOrder(order),
+                    price: formatPrice(order.price),
+                    order_time: new Date(order.timestamp).toLocaleString('vi-VN'),
+                    support_email: 'dichvuffspepic@gmail.com',
+                    support_phone: '0853297104',
+                    discord_link: 'https://discord.gg/uvNr6N2Tm3',
+                    estimated_time: '5-10 phút',
+                    note: 'Vui lòng kiểm tra cả hộp thư spam'
+                };
+                
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_CUSTOMER_TEMPLATE_ID,
+                    templateParams
+                );
+                
+                console.log('✅ Đã gửi email xác nhận cho khách:', order.customerEmail);
+                return { success: true, message: 'Đã gửi email xác nhận' };
+                
+            } catch (error) {
+                console.error('❌ Lỗi gửi email cho khách:', error);
+                return { success: false, error: error.text };
+            }
         }
         
         function getProductDisplayName() {
@@ -1170,6 +1376,200 @@ HƯỚNG DẪN XỬ LÝ:
                 return 'Mạng California Premium';
             }
             return currentProduct;
+        }
+        
+        // ========== HỆ THỐNG THÔNG BÁO ĐƠN HÀNG MỚI ==========
+        function notifyNewOrder(order) {
+            // Lưu vào danh sách đơn hàng mới
+            newOrders.push({
+                ...order,
+                notified: true,
+                read: false,
+                alertTime: new Date().toISOString()
+            });
+            localStorage.setItem('new_orders', JSON.stringify(newOrders));
+            
+            // Cập nhật counter
+            updateOrderCounter();
+            
+            // Hiển thị popup alert
+            showNewOrderAlert(order);
+            
+            // Phát âm thanh thông báo
+            playNotificationSound();
+            
+            // Rung điện thoại (nếu hỗ trợ)
+            vibratePhone();
+            
+            // Gửi thông báo trình duyệt
+            showBrowserNotification(order);
+        }
+        
+        // Hiển thị popup thông báo
+        function showNewOrderAlert(order) {
+            currentAlertOrder = order;
+            
+            const content = `
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: rgba(255,255,255,0.8);">Sản phẩm:</span>
+                        <span style="color: #06ffa5; font-weight: bold;">${getProductDisplayNameForOrder(order)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: rgba(255,255,255,0.8);">KEY:</span>
+                        <span style="color: white; font-family: monospace; font-weight: bold;">${order.customKey}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: rgba(255,255,255,0.8);">Giá:</span>
+                        <span style="color: #ff9500; font-weight: bold;">${formatPrice(order.price)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: rgba(255,255,255,0.8);">Thời gian:</span>
+                        <span style="color: rgba(255,255,255,0.8); font-size: 12px;">${new Date().toLocaleTimeString('vi-VN')}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderAlertContent').innerHTML = content;
+            document.getElementById('newOrderAlert').style.display = 'block';
+            
+            // Tự động ẩn sau 30 giây
+            setTimeout(() => {
+                if (document.getElementById('newOrderAlert').style.display === 'block') {
+                    closeNewOrderAlert();
+                }
+            }, 30000);
+        }
+        
+        // Cập nhật counter
+        function updateOrderCounter() {
+            const unreadCount = newOrders.filter(order => !order.read).length;
+            const counter = document.getElementById('orderCounter');
+            const countSpan = document.getElementById('newOrderCount');
+            
+            if (unreadCount > 0) {
+                countSpan.textContent = unreadCount;
+                counter.style.display = 'block';
+            } else {
+                counter.style.display = 'none';
+            }
+        }
+        
+        // Phát âm thanh thông báo
+        function playNotificationSound() {
+            try {
+                // Tạo âm thanh đơn giản
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1);
+                
+            } catch (e) {
+                console.log('Không thể phát âm thanh:', e);
+            }
+        }
+        
+        // Rung điện thoại
+        function vibratePhone() {
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+        
+        // Thông báo trình duyệt
+        function showBrowserNotification(order) {
+            if (!("Notification" in window)) return;
+            
+            if (Notification.permission === "granted") {
+                createNotification(order);
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        createNotification(order);
+                    }
+                });
+            }
+        }
+        
+        function createNotification(order) {
+            const notification = new Notification("🎮 EpicPC - Đơn hàng mới!", {
+                body: `KEY: ${order.customKey} - ${formatPrice(order.price)}`,
+                icon: 'images/avt.png',
+                tag: 'epicpc-new-order',
+                renotify: true
+            });
+            
+            notification.onclick = function() {
+                window.focus();
+                openAdminPanel();
+                this.close();
+            };
+        }
+        
+        // Đóng popup thông báo
+        function closeNewOrderAlert() {
+            document.getElementById('newOrderAlert').style.display = 'none';
+            if (currentAlertOrder) {
+                markOrderAsRead(currentAlertOrder.customKey);
+            }
+        }
+        
+        // Xem đơn hàng trong admin
+        function viewOrderInAdmin() {
+            closeNewOrderAlert();
+            openAdminPanel();
+        }
+        
+        // Đánh dấu đã đọc
+        function markOrderAsRead(orderKey) {
+            newOrders = newOrders.map(order => {
+                if (order.customKey === orderKey || orderKey === 'all') {
+                    return { ...order, read: true };
+                }
+                return order;
+            });
+            localStorage.setItem('new_orders', JSON.stringify(newOrders));
+            updateOrderCounter();
+        }
+        
+        // Kiểm tra đơn hàng mới
+        function checkForNewOrders() {
+            const allOrders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            const lastChecked = localStorage.getItem('last_order_check') || '0';
+            
+            allOrders.forEach(order => {
+                if (order.timestamp > lastChecked) {
+                    const alreadyNotified = newOrders.some(o => o.customKey === order.customKey);
+                    if (!alreadyNotified) {
+                        notifyNewOrder(order);
+                    }
+                }
+            });
+            
+            localStorage.setItem('last_order_check', new Date().toISOString());
+        }
+        
+        // Khởi động hệ thống thông báo
+        function initNotificationSystem() {
+            updateOrderCounter();
+            setInterval(checkForNewOrders, 30000);
+            
+            if ("Notification" in window && Notification.permission === "default") {
+                setTimeout(() => {
+                    Notification.requestPermission();
+                }, 2000);
+            }
         }
         
         // ========== QUẢN TRỊ ADMIN (CÓ MẬT KHẨU) ==========
@@ -1186,7 +1586,6 @@ HƯỚNG DẪN XỬ LÝ:
             const password = prompt('🔐 VUI LÒNG NHẬP MẬT KHẨU ADMIN:', '');
             
             if (password === null) {
-                // Người dùng nhấn Cancel
                 showNotification('Đã hủy truy cập admin', 'info');
                 return;
             }
@@ -1201,7 +1600,7 @@ HƯỚNG DẪN XỬ LÝ:
                 // Tự động khóa sau 5 lần sai
                 if (failedAttempts >= 5) {
                     const lockTime = new Date().getTime();
-                    localStorage.setItem('admin_locked_until', (lockTime + 15 * 60 * 1000).toString()); // Khóa 15 phút
+                    localStorage.setItem('admin_locked_until', (lockTime + 15 * 60 * 1000).toString());
                     showNotification('⚠️ Admin bị tạm khóa 15 phút do nhiều lần nhập sai!', 'error');
                 }
                 return;
@@ -1216,6 +1615,7 @@ HƯỚNG DẪN XỬ LÝ:
         
         function showAdminDashboard() {
             const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
+            const emailSettings = JSON.parse(localStorage.getItem('email_settings') || '{}');
             
             let html = `
                 <div style="background: linear-gradient(135deg, rgba(30, 144, 255, 0.2), rgba(157, 78, 221, 0.2)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(30, 144, 255, 0.3);">
@@ -1262,15 +1662,61 @@ HƯỚNG DẪN XỬ LÝ:
                         <div style="color: #b0c4de; font-size: 14px;">Tổng doanh thu</div>
                     </div>
                     <div style="background: rgba(255, 149, 0, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(255, 149, 0, 0.2);">
-                        <div style="font-size: 24px; color: #ff9500; font-weight: bold;">${orders.filter(o => o.customerEmail).length}</div>
-                        <div style="color: #b0c4de; font-size: 14px;">Có email</div>
+                        <div style="font-size: 24px; color: #ff9500; font-weight: bold;">${newOrders.filter(o => !o.read).length}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Thông báo mới</div>
                     </div>
                     <div style="background: rgba(157, 78, 221, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(157, 78, 221, 0.2);">
-                        <div style="font-size: 24px; color: #9d4edd; font-weight: bold;">${orders.filter(o => !o.customerEmail).length}</div>
-                        <div style="color: #b0c4de; font-size: 14px;">Không email</div>
+                        <div style="font-size: 24px; color: #9d4edd; font-weight: bold;">${orders.filter(o => o.customerEmail).length}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Có email</div>
                     </div>
                 </div>
                 
+                <!-- Cấu hình Email -->
+                <div style="background: rgba(30, 144, 255, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(30, 144, 255, 0.3);">
+                    <h4 style="color: #1e90ff; margin-bottom: 15px;">
+                        <i class="fas fa-envelope"></i> Cấu hình Email thông báo
+                    </h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label style="display: block; color: #b0c4de; margin-bottom: 5px; font-size: 14px;">Email nhận thông báo:</label>
+                            <input type="email" id="adminEmail" value="${emailSettings.adminEmail || 'dichvuffspepic@gmail.com'}" 
+                                   style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2a3147; color: white;">
+                        </div>
+                        <div>
+                            <label style="display: block; color: #b0c4de; margin-bottom: 5px; font-size: 14px;">Gửi email cho khách:</label>
+                            <select id="sendCustomerEmail" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2a3147; color: white;">
+                                <option value="yes" ${emailSettings.sendToCustomer !== false ? 'selected' : ''}>Có</option>
+                                <option value="no" ${emailSettings.sendToCustomer === false ? 'selected' : ''}>Không</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveEmailSettings()" 
+                                style="background: linear-gradient(135deg, #1e90ff, #9d4edd); 
+                                       color: white; 
+                                       border: none; 
+                                       padding: 10px 20px; 
+                                       border-radius: 5px;
+                                       cursor: pointer;
+                                       font-weight: 600;">
+                            <i class="fas fa-save"></i> Lưu cấu hình
+                        </button>
+                        <button onclick="testEmailSystem()" 
+                                style="background: transparent; 
+                                       color: #06ffa5; 
+                                       border: 1px solid #06ffa5; 
+                                       padding: 10px 20px; 
+                                       border-radius: 5px;
+                                       cursor: pointer;
+                                       font-weight: 600;">
+                            <i class="fas fa-paper-plane"></i> Test email
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Nút chức năng -->
                 <div style="margin-bottom: 20px;">
                     <button onclick="exportOrders()" 
                             style="background: linear-gradient(135deg, #06ffa5, #00cc88); 
@@ -1299,19 +1745,19 @@ HƯỚNG DẪN XỬ LÝ:
                                    gap: 8px;">
                         <i class="fas fa-trash"></i> Xóa tất cả
                     </button>
-                    <button onclick="changeAdminPassword()" 
-                            style="background: transparent; 
-                                   color: #1e90ff; 
-                                   border: 1px solid #1e90ff; 
+                    <button onclick="clearAllNotifications()" 
+                            style="background: linear-gradient(135deg, #9d4edd, #7209b7); 
+                                   color: white; 
+                                   border: none; 
                                    padding: 12px 20px; 
                                    border-radius: 8px;
                                    font-weight: 600;
                                    cursor: pointer;
+                                   margin-left: 10px;
                                    display: inline-flex;
                                    align-items: center;
-                                   gap: 8px;
-                                   margin-left: 10px;">
-                        <i class="fas fa-key"></i> Đổi MK
+                                   gap: 8px;">
+                        <i class="fas fa-bell-slash"></i> Xóa thông báo
                     </button>
                 </div>
                 
@@ -1428,9 +1874,9 @@ HƯỚNG DẪN XỬ LÝ:
                     <div style="color: #b0c4de; font-size: 14px;">
                         <p><i class="fas fa-info-circle"></i> <strong>Thông tin hệ thống:</strong></p>
                         <p style="margin-left: 20px;">• Tổng số đơn hàng: ${orders.length}</p>
-                        <p style="margin-left: 20px;">• Dung lượng: ${(JSON.stringify(orders).length / 1024).toFixed(2)} KB</p>
+                        <p style="margin-left: 20px;">• Thông báo chưa đọc: ${newOrders.filter(o => !o.read).length}</p>
                         <p style="margin-left: 20px;">• Cập nhật: ${new Date().toLocaleString('vi-VN')}</p>
-                        <p style="margin-left: 20px;">• Mật khẩu admin: ******</p>
+                        <p style="margin-left: 20px;">• Email thông báo: ${emailSettings.adminEmail || 'dichvuffspepic@gmail.com'}</p>
                     </div>
                 </div>
             `;
@@ -1443,6 +1889,7 @@ HƯỚNG DẪN XỬ LÝ:
             document.getElementById('adminPanel').style.display = 'none';
         }
         
+        // ========== CÁC HÀM HỖ TRỢ ==========
         function getProductDisplayNameForOrder(order) {
             if (order.product === 'reg-mouse') {
                 return `Reg Mouse ${(order.version || 'basic').toUpperCase()}`;
@@ -1456,34 +1903,49 @@ HƯỚNG DẪN XỬ LÝ:
             return order.product;
         }
         
-        // ========== ĐỔI MẬT KHẨU ADMIN ==========
-        function changeAdminPassword() {
-            const oldPass = prompt('Nhập mật khẩu cũ:', '');
-            if (oldPass !== ADMIN_PASSWORD) {
-                showNotification('Mật khẩu cũ không đúng!', 'error');
-                return;
+        // Lưu cấu hình email
+        function saveEmailSettings() {
+            const adminEmail = document.getElementById('adminEmail').value;
+            const sendToCustomer = document.getElementById('sendCustomerEmail').value;
+            
+            localStorage.setItem('email_settings', JSON.stringify({
+                adminEmail: adminEmail,
+                sendToCustomer: sendToCustomer === 'yes'
+            }));
+            
+            showNotification('✅ Đã lưu cấu hình email', 'success');
+        }
+        
+        // Test email system
+        function testEmailSystem() {
+            const testOrder = {
+                customKey: 'TEST123456',
+                product: 'fixlag-pc',
+                version: '',
+                price: 120000,
+                customerEmail: 'test@example.com',
+                customerName: 'Nguyễn Văn Test',
+                timestamp: new Date().toISOString()
+            };
+            
+            sendOrderEmailNotification(testOrder).then(result => {
+                if (result.success) {
+                    showNotification('✅ Đã gửi email test thành công!', 'success');
+                } else {
+                    showNotification('❌ Lỗi gửi email test', 'error');
+                }
+            });
+        }
+        
+        // Xóa tất cả thông báo
+        function clearAllNotifications() {
+            if (confirm('Xóa tất cả thông báo?')) {
+                newOrders = [];
+                localStorage.removeItem('new_orders');
+                updateOrderCounter();
+                showNotification('Đã xóa tất cả thông báo', 'success');
+                showAdminDashboard();
             }
-            
-            const newPass = prompt('Nhập mật khẩu mới:', '');
-            if (!newPass || newPass.length < 4) {
-                showNotification('Mật khẩu mới phải có ít nhất 4 ký tự!', 'error');
-                return;
-            }
-            
-            const confirmPass = prompt('Nhập lại mật khẩu mới:', '');
-            if (newPass !== confirmPass) {
-                showNotification('Mật khẩu nhập lại không khớp!', 'error');
-                return;
-            }
-            
-            // Lưu mật khẩu mới
-            ADMIN_PASSWORD = newPass;
-            showNotification('✅ Đã đổi mật khẩu thành công!', 'success');
-            
-            // Lưu vào localStorage để giữ mật khẩu khi refresh
-            localStorage.setItem('admin_password', newPass);
-            
-            closeAdminPanel();
         }
         
         function contactCustomer(email, name, key) {
@@ -1545,7 +2007,7 @@ HƯỚNG DẪN XỬ LÝ:
             showNotification(`Đã xuất ${orders.length} đơn hàng`, 'success');
         }
         
-        // ========== HÀM HỖ TRỢ ==========
+        // ========== HÀM HỖ TRỢ CHUNG ==========
         function formatPrice(price) {
             return price.toLocaleString('vi-VN') + '₫';
         }
@@ -1592,6 +2054,9 @@ HƯỚNG DẪN XỬ LÝ:
             if (event.target === document.getElementById('adminPanel')) {
                 closeAdminPanel();
             }
+            if (event.target === document.getElementById('newOrderAlert')) {
+                closeNewOrderAlert();
+            }
         };
         
         document.addEventListener('keydown', function(event) {
@@ -1599,6 +2064,7 @@ HƯỚNG DẪN XỬ LÝ:
                 closePaymentModal();
                 closeSuccessModal();
                 closeAdminPanel();
+                closeNewOrderAlert();
             }
         });
     </script>
