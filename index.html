@@ -418,6 +418,81 @@
             color: #1e90ff;
         }
         
+        /* ADMIN PANEL STYLES */
+        .admin-panel-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            z-index: 9999;
+            border: 2px solid #1e90ff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .admin-panel-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.4);
+            background: rgba(30, 144, 255, 0.2);
+        }
+        
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e2538;
+            padding: 30px;
+            border-radius: 20px;
+            z-index: 10000;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid #1e90ff;
+            box-shadow: 0 0 40px rgba(30, 144, 255, 0.3);
+            backdrop-filter: blur(20px);
+        }
+        
+        .admin-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .admin-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        .admin-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e90ff, #9d4edd);
+            border-radius: 4px;
+        }
+        
+        /* Password prompt styling */
+        .admin-password-input {
+            background: rgba(30, 35, 56, 0.9);
+            border: 2px solid #1e90ff;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 250px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .shop-grid {
@@ -433,6 +508,10 @@
             }
             .version-tabs {
                 flex-direction: column;
+            }
+            .admin-panel {
+                width: 95%;
+                padding: 20px;
             }
         }
     </style>
@@ -779,38 +858,12 @@
     </div>
 
     <!-- Nút Admin Panel -->
-    <button onclick="openAdminPanel()" 
-            style="position: fixed; 
-                   bottom: 20px; 
-                   left: 20px; 
-                   background: #333; 
-                   color: white; 
-                   padding: 10px 15px; 
-                   border-radius: 25px; 
-                   z-index: 9999;
-                   border: 2px solid #1e90ff;
-                   cursor: pointer;
-                   font-weight: bold;">
-        <i class="fas fa-user-shield"></i> Admin
+    <button onclick="openAdminPanel()" class="admin-panel-btn">
+        <i class="fas fa-user-shield"></i> Admin Panel
     </button>
 
     <!-- Panel Admin -->
-    <div id="adminPanel" style="display: none; 
-                              position: fixed; 
-                              top: 50%; 
-                              left: 50%; 
-                              transform: translate(-50%, -50%); 
-                              background: #1e2538; 
-                              padding: 30px; 
-                              border-radius: 15px; 
-                              z-index: 10000; 
-                              width: 90%; 
-                              max-width: 800px; 
-                              max-height: 80vh; 
-                              overflow-y: auto;
-                              border: 2px solid #1e90ff;
-                              box-shadow: 0 0 30px rgba(30, 144, 255, 0.5);">
-    </div>
+    <div id="adminPanel" class="admin-panel"></div>
 
     <!-- Footer -->
     <footer>
@@ -834,9 +887,10 @@
         let currentPrice = 0;
         let currentVersion = 'basic';
         let pendingOrder = null;
+        let ADMIN_PASSWORD = 'EpicPC'; // Mật khẩu admin
         
         // Thay bằng URL Web App của bạn
-        const WEB_APP_URL = 'https://script.google.com/macros/s/YOUR_WEB_APP_ID/exec';
+        const WEB_APP_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgksIH5iLClSGkdsX26QjbGgt5I42Ix38W_y1Igj9twUPAbUoRmVgBrFXpZ290XmniNO4TmebJT0i59d1YAeKuiXMIW2cRvJaZzMroaIvHt8U4u5AwRCvTas0XzSgK_Zg0oZxdHqewsVc3xb0yuPMVc9Ch9QuCiVZ4c4xir9s4JP4Bkj4Gly1xxeBYm_kB7J8zmsJ9fy4ymYQ9Qmg7OACLMIZdqbEmAAFjA3mXHOPCGnp8a-PR9HWCxacP4QHDQwn5LVsP28YoABfAwe-HDwsMCo2oFF7STTr6eFrS4&lib=MJImc5xVL05ODoHbZmKh7u-llACzxaqyj';
         
         // Giá sản phẩm
         const productPrices = {
@@ -1076,7 +1130,7 @@
         
         // ========== GỬI THÔNG BÁO CHO ADMIN ==========
         function sendAdminNotification(order) {
-            const adminEmail = 'email_cua_ban@gmail.com'; // Thay bằng email của bạn
+            const adminEmail = 'kslowshios@gmail.com'; // Thay bằng email của bạn
             const subject = `🎮 EPICPC - Đơn hàng mới: ${order.customKey}`;
             const body = `
 ĐƠN HÀNG MỚI - EPICPC SHOP
@@ -1118,71 +1172,244 @@ HƯỚNG DẪN XỬ LÝ:
             return currentProduct;
         }
         
-        // ========== QUẢN TRỊ ADMIN ==========
+        // ========== QUẢN TRỊ ADMIN (CÓ MẬT KHẨU) ==========
         function openAdminPanel() {
+            // Kiểm tra xem có đang bị khóa không
+            const lockedUntil = localStorage.getItem('admin_locked_until');
+            if (lockedUntil && new Date().getTime() < parseInt(lockedUntil)) {
+                const minutesLeft = Math.ceil((parseInt(lockedUntil) - new Date().getTime()) / (60 * 1000));
+                showNotification(`⚠️ Admin bị khóa, vui lòng thử lại sau ${minutesLeft} phút`, 'error');
+                return;
+            }
+            
+            // Hiển thị popup nhập mật khẩu
+            const password = prompt('🔐 VUI LÒNG NHẬP MẬT KHẨU ADMIN:', '');
+            
+            if (password === null) {
+                // Người dùng nhấn Cancel
+                showNotification('Đã hủy truy cập admin', 'info');
+                return;
+            }
+            
+            if (password !== ADMIN_PASSWORD) {
+                showNotification('❌ Mật khẩu không đúng!', 'error');
+                
+                // Ghi log sai mật khẩu
+                const failedAttempts = parseInt(localStorage.getItem('admin_failed_attempts') || '0') + 1;
+                localStorage.setItem('admin_failed_attempts', failedAttempts.toString());
+                
+                // Tự động khóa sau 5 lần sai
+                if (failedAttempts >= 5) {
+                    const lockTime = new Date().getTime();
+                    localStorage.setItem('admin_locked_until', (lockTime + 15 * 60 * 1000).toString()); // Khóa 15 phút
+                    showNotification('⚠️ Admin bị tạm khóa 15 phút do nhiều lần nhập sai!', 'error');
+                }
+                return;
+            }
+            
+            // Reset số lần sai
+            localStorage.removeItem('admin_failed_attempts');
+            
+            // Mật khẩu đúng - hiển thị admin panel
+            showAdminDashboard();
+        }
+        
+        function showAdminDashboard() {
             const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
             
             let html = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: #1e90ff;">📊 Quản trị đơn hàng (${orders.length})</h2>
-                    <button onclick="closeAdminPanel()" style="background: #ff6b6b; color: white; border: none; padding: 8px 15px; border-radius: 5px;">Đóng</button>
+                <div style="background: linear-gradient(135deg, rgba(30, 144, 255, 0.2), rgba(157, 78, 221, 0.2)); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(30, 144, 255, 0.3);">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <div style="font-size: 24px; color: #1e90ff;">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h3 style="color: #1e90ff; margin: 0;">🔐 ADMIN DASHBOARD</h3>
+                            <p style="color: #b0c4de; font-size: 14px; margin: 5px 0 0 0;">
+                                <i class="fas fa-clock"></i> Đăng nhập: ${new Date().toLocaleString('vi-VN')}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2 style="color: #1e90ff; background: linear-gradient(135deg, #1e90ff, #9d4edd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        <i class="fas fa-chart-line"></i> Quản lý đơn hàng
+                    </h2>
+                    <button onclick="closeAdminPanel()" 
+                            style="background: linear-gradient(135deg, #ff6b6b, #ee5a52); 
+                                   color: white; 
+                                   border: none; 
+                                   padding: 10px 20px; 
+                                   border-radius: 8px;
+                                   font-weight: 600;
+                                   cursor: pointer;
+                                   display: flex;
+                                   align-items: center;
+                                   gap: 8px;">
+                        <i class="fas fa-sign-out-alt"></i> Thoát
+                    </button>
+                </div>
+                
+                <!-- Thống kê nhanh -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <div style="background: rgba(6, 255, 165, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(6, 255, 165, 0.2);">
+                        <div style="font-size: 24px; color: #06ffa5; font-weight: bold;">${orders.length}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Tổng đơn hàng</div>
+                    </div>
+                    <div style="background: rgba(30, 144, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(30, 144, 255, 0.2);">
+                        <div style="font-size: 24px; color: #1e90ff; font-weight: bold;">${formatPrice(orders.reduce((sum, order) => sum + order.price, 0))}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Tổng doanh thu</div>
+                    </div>
+                    <div style="background: rgba(255, 149, 0, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(255, 149, 0, 0.2);">
+                        <div style="font-size: 24px; color: #ff9500; font-weight: bold;">${orders.filter(o => o.customerEmail).length}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Có email</div>
+                    </div>
+                    <div style="background: rgba(157, 78, 221, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(157, 78, 221, 0.2);">
+                        <div style="font-size: 24px; color: #9d4edd; font-weight: bold;">${orders.filter(o => !o.customerEmail).length}</div>
+                        <div style="color: #b0c4de; font-size: 14px;">Không email</div>
+                    </div>
                 </div>
                 
                 <div style="margin-bottom: 20px;">
-                    <button onclick="exportOrders()" style="background: #06ffa5; color: #000; border: none; padding: 10px 15px; border-radius: 5px; margin-right: 10px;">
+                    <button onclick="exportOrders()" 
+                            style="background: linear-gradient(135deg, #06ffa5, #00cc88); 
+                                   color: #000; 
+                                   border: none; 
+                                   padding: 12px 20px; 
+                                   border-radius: 8px; 
+                                   margin-right: 10px;
+                                   font-weight: 600;
+                                   cursor: pointer;
+                                   display: inline-flex;
+                                   align-items: center;
+                                   gap: 8px;">
                         <i class="fas fa-download"></i> Xuất Excel
                     </button>
-                    <button onclick="clearAllOrders()" style="background: #ff9500; color: white; border: none; padding: 10px 15px; border-radius: 5px;">
+                    <button onclick="clearAllOrders()" 
+                            style="background: linear-gradient(135deg, #ff9500, #ff5e00); 
+                                   color: white; 
+                                   border: none; 
+                                   padding: 12px 20px; 
+                                   border-radius: 8px;
+                                   font-weight: 600;
+                                   cursor: pointer;
+                                   display: inline-flex;
+                                   align-items: center;
+                                   gap: 8px;">
                         <i class="fas fa-trash"></i> Xóa tất cả
+                    </button>
+                    <button onclick="changeAdminPassword()" 
+                            style="background: transparent; 
+                                   color: #1e90ff; 
+                                   border: 1px solid #1e90ff; 
+                                   padding: 12px 20px; 
+                                   border-radius: 8px;
+                                   font-weight: 600;
+                                   cursor: pointer;
+                                   display: inline-flex;
+                                   align-items: center;
+                                   gap: 8px;
+                                   margin-left: 10px;">
+                        <i class="fas fa-key"></i> Đổi MK
                     </button>
                 </div>
                 
-                <div style="overflow-x: auto; max-height: 400px;">
+                <div style="overflow-x: auto; max-height: 400px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
             `;
             
             if (orders.length === 0) {
-                html += `<div style="padding: 40px; text-align: center; color: #b0c4de;">
-                            <i class="fas fa-box-open" style="font-size: 40px; margin-bottom: 15px;"></i>
-                            <p>Không có đơn hàng nào</p>
-                         </div>`;
+                html += `
+                    <div style="padding: 50px; text-align: center; color: #b0c4de;">
+                        <div style="font-size: 60px; color: #444; margin-bottom: 15px;">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <p style="font-size: 18px; margin-bottom: 10px;">Chưa có đơn hàng nào</p>
+                        <p style="font-size: 14px; color: #666;">Đơn hàng sẽ xuất hiện ở đây khi có khách đặt</p>
+                    </div>
+                `;
             } else {
                 html += `
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="background: rgba(30, 144, 255, 0.2);">
-                                <th style="padding: 10px; border: 1px solid #444;">STT</th>
-                                <th style="padding: 10px; border: 1px solid #444;">Thời gian</th>
-                                <th style="padding: 10px; border: 1px solid #444;">Sản phẩm</th>
-                                <th style="padding: 10px; border: 1px solid #444;">KEY</th>
-                                <th style="padding: 10px; border: 1px solid #444;">Liên hệ</th>
-                                <th style="padding: 10px; border: 1px solid #444;">Giá</th>
-                                <th style="padding: 10px; border: 1px solid #444;">Hành động</th>
+                            <tr style="background: linear-gradient(135deg, rgba(30, 144, 255, 0.3), rgba(157, 78, 221, 0.2));">
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">STT</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">Thời gian</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">Sản phẩm</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">KEY</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">Liên hệ</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">Giá</th>
+                                <th style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
                 
+                // Hiển thị đơn hàng mới nhất trước
                 orders.reverse().forEach((order, index) => {
+                    const contactInfo = order.customerEmail ? 
+                        `<div>📧 ${order.customerEmail}</div>` : 
+                        '';
+                    const nameInfo = order.customerName ? 
+                        `<div>👤 ${order.customerName}</div>` : 
+                        '';
+                    
                     html += `
-                        <tr style="border-bottom: 1px solid #333;">
-                            <td style="padding: 10px;">${orders.length - index}</td>
-                            <td style="padding: 10px; font-size: 12px;">${new Date(order.timestamp).toLocaleTimeString('vi-VN')}</td>
-                            <td style="padding: 10px;">${getProductDisplayNameForOrder(order)}</td>
-                            <td style="padding: 10px; font-family: monospace; color: #06ffa5;">${order.customKey}</td>
-                            <td style="padding: 10px;">
-                                ${order.customerEmail ? order.customerEmail + '<br>' : ''}
-                                ${order.customerName ? order.customerName : ''}
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${index % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                            <td style="padding: 12px;">${orders.length - index}</td>
+                            <td style="padding: 12px; font-size: 12px; color: #b0c4de;">
+                                ${new Date(order.timestamp).toLocaleDateString('vi-VN')}<br>
+                                ${new Date(order.timestamp).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'})}
                             </td>
-                            <td style="padding: 10px; color: #06ffa5;">${formatPrice(order.price)}</td>
-                            <td style="padding: 10px;">
-                                <button onclick="contactCustomer('${order.customerEmail}', '${order.customerName}', '${order.customKey}')" 
-                                        style="background: #1e90ff; color: white; border: none; padding: 5px 10px; border-radius: 3px; margin-right: 5px;">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                                <button onclick="deleteOrder(${orders.length - 1 - index})" 
-                                        style="background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                            <td style="padding: 12px;">
+                                <div style="font-weight: 500; margin-bottom: 3px;">${getProductDisplayNameForOrder(order)}</div>
+                                <div style="font-size: 11px; color: #9d4edd; background: rgba(157, 78, 221, 0.1); padding: 2px 5px; border-radius: 3px; display: inline-block;">
+                                    ${order.version ? order.version.toUpperCase() : 'STANDARD'}
+                                </div>
+                            </td>
+                            <td style="padding: 12px;">
+                                <div style="font-family: monospace; color: #06ffa5; font-weight: bold; letter-spacing: 1px;">
+                                    ${order.customKey}
+                                </div>
+                            </td>
+                            <td style="padding: 12px; font-size: 13px;">
+                                ${contactInfo}
+                                ${nameInfo}
+                                ${!order.customerEmail && !order.customerName ? 
+                                  '<div style="color: #ff9500;">⚠️ Chưa có thông tin</div>' : ''}
+                            </td>
+                            <td style="padding: 12px; color: #06ffa5; font-weight: bold;">
+                                ${formatPrice(order.price)}
+                            </td>
+                            <td style="padding: 12px;">
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="contactCustomer('${order.customerEmail || ''}', '${order.customerName || ''}', '${order.customKey}')" 
+                                            style="background: rgba(30, 144, 255, 0.2); 
+                                                   color: #1e90ff; 
+                                                   border: 1px solid rgba(30, 144, 255, 0.3); 
+                                                   padding: 6px 12px; 
+                                                   border-radius: 5px;
+                                                   cursor: pointer;
+                                                   display: flex;
+                                                   align-items: center;
+                                                   gap: 5px;
+                                                   font-size: 12px;">
+                                        <i class="fas fa-paper-plane" style="font-size: 10px;"></i> Gửi
+                                    </button>
+                                    <button onclick="deleteOrder(${orders.length - 1 - index})" 
+                                            style="background: rgba(255, 107, 107, 0.2); 
+                                                   color: #ff6b6b; 
+                                                   border: 1px solid rgba(255, 107, 107, 0.3); 
+                                                   padding: 6px 12px; 
+                                                   border-radius: 5px;
+                                                   cursor: pointer;
+                                                   display: flex;
+                                                   align-items: center;
+                                                   gap: 5px;
+                                                   font-size: 12px;">
+                                        <i class="fas fa-trash" style="font-size: 10px;"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -1197,9 +1424,14 @@ HƯỚNG DẪN XỬ LÝ:
             html += `
                 </div>
                 
-                <div style="margin-top: 20px; color: #b0c4de; font-size: 14px;">
-                    <p><i class="fas fa-info-circle"></i> Tổng doanh thu: ${formatPrice(orders.reduce((sum, order) => sum + order.price, 0))}</p>
-                    <p><i class="fas fa-database"></i> Dữ liệu tự động backup vào localStorage</p>
+                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div style="color: #b0c4de; font-size: 14px;">
+                        <p><i class="fas fa-info-circle"></i> <strong>Thông tin hệ thống:</strong></p>
+                        <p style="margin-left: 20px;">• Tổng số đơn hàng: ${orders.length}</p>
+                        <p style="margin-left: 20px;">• Dung lượng: ${(JSON.stringify(orders).length / 1024).toFixed(2)} KB</p>
+                        <p style="margin-left: 20px;">• Cập nhật: ${new Date().toLocaleString('vi-VN')}</p>
+                        <p style="margin-left: 20px;">• Mật khẩu admin: ******</p>
+                    </div>
                 </div>
             `;
             
@@ -1224,6 +1456,36 @@ HƯỚNG DẪN XỬ LÝ:
             return order.product;
         }
         
+        // ========== ĐỔI MẬT KHẨU ADMIN ==========
+        function changeAdminPassword() {
+            const oldPass = prompt('Nhập mật khẩu cũ:', '');
+            if (oldPass !== ADMIN_PASSWORD) {
+                showNotification('Mật khẩu cũ không đúng!', 'error');
+                return;
+            }
+            
+            const newPass = prompt('Nhập mật khẩu mới:', '');
+            if (!newPass || newPass.length < 4) {
+                showNotification('Mật khẩu mới phải có ít nhất 4 ký tự!', 'error');
+                return;
+            }
+            
+            const confirmPass = prompt('Nhập lại mật khẩu mới:', '');
+            if (newPass !== confirmPass) {
+                showNotification('Mật khẩu nhập lại không khớp!', 'error');
+                return;
+            }
+            
+            // Lưu mật khẩu mới
+            ADMIN_PASSWORD = newPass;
+            showNotification('✅ Đã đổi mật khẩu thành công!', 'success');
+            
+            // Lưu vào localStorage để giữ mật khẩu khi refresh
+            localStorage.setItem('admin_password', newPass);
+            
+            closeAdminPanel();
+        }
+        
         function contactCustomer(email, name, key) {
             const contact = email || name || 'Không có thông tin';
             const mailtoLink = `mailto:${email || 'dichvuffspepic@gmail.com'}?subject=EpicPC - Key ${key}&body=Chào bạn,%0D%0A%0D%0ADưới đây là key phần mềm bạn đã đặt:%0D%0A%0D%0A🔑 KEY: ${key}%0D%0A%0D%0AHướng dẫn sử dụng:%0D%0A1. Tải phần mềm tại: [link download]%0D%0A2. Nhập key này để kích hoạt%0D%0A3. Liên hệ nếu có vấn đề%0D%0A%0D%0A---%0D%0AEpicPC Shop%0D%0AHotline: 0853297104`;
@@ -1238,7 +1500,7 @@ HƯỚNG DẪN XỬ LÝ:
                 const orders = JSON.parse(localStorage.getItem('epicpc_orders') || '[]');
                 orders.splice(index, 1);
                 localStorage.setItem('epicpc_orders', JSON.stringify(orders));
-                openAdminPanel();
+                showAdminDashboard();
                 showNotification('Đã xóa đơn hàng', 'success');
             }
         }
@@ -1246,7 +1508,7 @@ HƯỚNG DẪN XỬ LÝ:
         function clearAllOrders() {
             if (confirm('Bạn có chắc muốn xóa TẤT CẢ đơn hàng? Hành động này không thể hoàn tác!')) {
                 localStorage.removeItem('epicpc_orders');
-                openAdminPanel();
+                showAdminDashboard();
                 showNotification('Đã xóa tất cả đơn hàng', 'success');
             }
         }
