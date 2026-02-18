@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EpicPC</title>
+  <meta name="description" content="EpicPC official profile and shop - Download free tools" />
+  <link rel="icon" type="image/png" href="images/card.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-spinner"></div>
+    <div class="click-to-enter" id="clickToEnter" style="display: none; opacity: 0; transition: opacity 0.5s;">
+      <div class="butterfly-container">
+        <div class="butterfly">
+          <div class="wing left-wing"></div>
+          <div class="body-part"></div>
+          <div class="wing right-wing"></div>
+        </div>
+        <div class="click-text">Click to Enter</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animated Particles Background -->
+  <div class="particles-container" id="particlesContainer"></div>
+  <canvas id="cursorCanvas"></canvas>
+
+  <div class="container">
+    <!-- Profile Sidebar -->
+    <aside class="profile-sidebar">
+      <div class="profile-card">
+        <div class="avatar-wrapper">
+          <img src="avatar.png" alt="EpicPC Avatar" class="avatar" />
+          <div class="avatar-glow"></div>
+        </div>
+        <div class="profile-info">
+          <h1 class="username gradient-text">
+            Epic
+            <svg class="verified-badge" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="10" fill="#1DA1F2" />
+              <path d="M8.5 12.5L5.5 9.5L6.5 8.5L8.5 10.5L13.5 5.5L14.5 6.5L8.5 12.5Z" fill="white" />
+            </svg>
+          </h1>
+          <p class="user-tag">@Epicpc.exe</p>
+          <p class="user-description">
+            Hỗ Trợ Chuyên Sâu Về Game Free Fire Trên PC
+            LH:0853297104
+          </p>
+        </div>
+        <a href="https://discord.gg/aGmTxUdsuq" target="_blank" class="discord-btn pulse-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
+          </svg>
+          Join Discord Server
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Free Download Section -->
+      <section class="content-section fade-in-section">
+        <h2 class="section-title gradient-text">
+          <span class="title-icon">📥</span>
+          Free Download
+        </h2>
+        <div class="cards-grid download-grid">
+          <div class="download-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="card-content">
+              <h3 class="card-title">Bluestack 4</h3>
+              <p class="card-subtitle">Android Emulator - Stable Version</p>
+              <p class="card-description">
+                Phiên bản ổn định, tối ưu cho máy cấu hình thấp
+              </p>
+            </div>
+            <a href="files/BlueStacks_App_Player_v4.240.30.1002.exe" class="download-link glow-btn" download>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 12L3 7h3V0h4v7h3L8 12z" />
+                <path d="M0 14h16v2H0v-2z" />
+              </svg>
+              Download Now
+            </a>
+          </div>
+          <div class="download-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="card-content">
+              <h3 class="card-title">Bluestack 5 .1075</h3>
+              <p class="card-subtitle">Latest Android Emulator</p>
+              <p class="card-description">
+                Phiên bản ổn định, hiệu suất cao, mượt mà hơn
+              </p>
+            </div>
+            <a href="files/BlueStacksInstaller_5.13.0.1075.exe" class="download-link glow-btn" download>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 12L3 7h3V0h4v7h3L8 12z" />
+                <path d="M0 14h16v2H0v-2z" />
+              </svg>
+              Download Now
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Products Section -->
+      <section class="content-section fade-in-section">
+        <h2 class="section-title gradient-text">
+          <span class="title-icon">🚀</span>
+          Shop
+        </h2>
+        <div class="cards-grid product-grid">
+          <!-- PC Optimization Product -->
+          <div class="product-card tilt-card premium-card">
+            <div class="card-shine"></div>
+            <div class="product-header">
+              <img src="images/card.png" alt="PC Optimization" class="product-icon" />
+            </div>
+            <h3 class="product-title gradient-text">Tối ưu – Fixlag PC</h3>
+            <p class="product-subtitle">
+              Tăng cường hiệu suất chơi game Free Fire
+            </p>
+            <div class="product-features">
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Tăng cường FPS:</strong> Tối ưu hóa hệ thống để đạt
+                  FPS cao nhất, giảm thiểu lag và giật
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Tăng độ mượt mà:</strong> Cải thiện trải nghiệm chơi
+                  game trên giả lập, mượt mà như chơi trên điện thoại
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Tối ưu hệ thống:</strong> Dọn dẹp RAM, tắt tiến
+                  trình không cần thiết, tăng tốc độ xử lý
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Cấu hình tự động:</strong> Tự động điều chỉnh cài
+                  đặt tối ưu cho từng cấu hình máy
+                </div>
+              </div>
+            </div>
+
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="buy-btn premium-btn pulse-btn">
+              <span>Get Now</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4 8l4 4 4-4H4z" />
+              </svg>
+            </a>
+          </div>
+
+          <!-- Mouse Registry Product -->
+          <div class="product-card tilt-card premium-card">
+            <div class="card-shine"></div>
+            <div class="product-header">
+              <img src="images/card.png" alt="Reg Mouse" class="product-icon" />
+            </div>
+            <h3 class="product-title gradient-text">Reg Mouse - Sensi</h3>
+            <p class="product-subtitle">Nâng cao khả năng điều khiển chuột</p>
+            <div class="product-features">
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Hỗ trợ kéo tâm:</strong> Tự động điều chỉnh độ nhạy
+                  chuột khi ngắm, giúp kéo tâm chính xác hơn
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Tăng độ bám đầu:</strong> Cải thiện khả năng
+                  tracking mục tiêu, bám đầu địch dễ dàng hơn
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Tùy chỉnh linh hoạt:</strong> Điều chỉnh độ nhạy,
+                  tốc độ chuột theo từng loại súng
+                </div>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon"></span>
+                <div class="feature-text">
+                  <strong>Giảm recoil:</strong> Hỗ trợ kiểm soát giật súng tốt
+                  hơn, bắn chính xác hơn
+                </div>
+              </div>
+            </div>
+
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="buy-btn pro-btn pulse-btn">
+              <span>Get Now</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4 8l4 4 4-4H4z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional Tools Section -->
+      <section class="content-section fade-in-section">
+        <h2 class="section-title gradient-text">
+          <span class="title-icon"></span>
+          Tools
+        </h2>
+        <div class="cards-grid tools-grid">
+          <div class="tool-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="tool-icon"></div>
+            <h3 class="tool-title">Unlock FPS</h3>
+            <p class="tool-description">
+              Mở khóa giới hạn FPS, cho phép chơi game ở FPS cao hơn
+            </p>
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="tool-link">Learn More →</a>
+          </div>
+          <div class="tool-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="tool-icon"></div>
+            <h3 class="tool-title">Fake FPS</h3>
+            <p class="tool-description">
+              Hiển thị FPS tùy chỉnh, bypass các hệ thống phát hiện
+            </p>
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="tool-link">Learn More →</a>
+          </div>
+          <div class="tool-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="tool-icon"></div>
+            <h3 class="tool-title">Mạng Mỹ</h3>
+            <p class="tool-description">
+              Fake Mạng Mỹ, tăng ping, trải nghiệm mức ping California
+            </p>
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="tool-link">Learn More →</a>
+          </div>
+          <div class="tool-card tilt-card">
+            <div class="card-shine"></div>
+            <div class="tool-icon"></div>
+            <h3 class="tool-title">More Tools</h3>
+            <p class="tool-description">
+              Khám phá thêm nhiều công cụ hỗ trợ chơi game khác
+            </p>
+            <a href="https://www.facebook.com/tuannghi.ha.9" class="tool-link">Explore →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mini Music Player -->
+  <div class="music-widget-container">
+    <!-- Floating Icon -->
+    <div class="music-icon-btn" id="musicIconBtn">
+      <div class="music-waves-mini">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Music Player Card -->
+    <div class="music-player-card" id="musicPlayerCard">
+      <!-- Animated Background Glow -->
+      <div class="player-glow"></div>
+
+      <!-- Visualizer Only -->
+      <div class="visualizer-section">
+        <div class="music-visualizer">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <!-- Track Info -->
+      <div class="track-info">
+        <h3 class="track-title" id="trackTitle">4daopps</h3>
+        <p class="track-artist" id="trackArtist">BateKer</p>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="time-info">
+          <span class="current-time" id="currentTime">0:00</span>
+          <span class="total-time" id="totalTime">0:00</span>
+        </div>
+      </div>
+
+      <!-- Player Controls -->
+      <div class="player-controls">
+        <button class="play-btn" id="playPauseBtn">
+          <svg class="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <svg class="pause-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+        </button>
+
+        <div class="volume-area">
+          <button class="volume-btn" id="muteBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+            </svg>
+          </button>
+          <input type="range" class="volume-slider" id="volumeSlider" value="80" max="100" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioPlayer" loop>
+    <!-- User needs to put a file here. We will default to trying a generic name. -->
+    <source src="music/audio.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
